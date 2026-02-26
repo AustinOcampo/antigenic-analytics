@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <script>document.documentElement.classList.replace("no-js","js")</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Antigenic Analytics</title>
+  <meta name="description" content="Open-source behavioral fraud detection. Find what your existing tools miss." />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://austino campo.github.io/antigenic-analytics/" />
+  <meta property="og:title"       content="Antigenic Analytics — Behavioral Fraud Detection Framework" />
+  <meta property="og:description" content="35 open-source SQL signals across 4 fraud verticals. Find what your existing tools miss. Free to deploy under Apache 2.0." />
+  <meta property="og:site_name"   content="Antigenic Analytics" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:title"       content="Antigenic Analytics — Behavioral Fraud Detection Framework" />
+  <meta name="twitter:description" content="35 open-source SQL signals across 4 fraud verticals. Find what your existing tools miss. Free to deploy under Apache 2.0." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #ffffff;
+      --fg:       #0a0a0a;
+      --acc:      #B45309;
+      --acc-dim:  rgba(180,83,9,0.09);
+      --acc-glow: rgba(180,83,9,0.22);
+      --z50:      #fafafa;
+      --z100:     #f5f5f5;
+      --z200:     #e5e5e5;
+      --z400:     #a3a3a3;
+      --z600:     #525252;
+      --z800:     #1a1a1a;
+      --f:        'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --ease:     cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--f);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─────────────────────────────────────────
+       LAYOUT
+    ───────────────────────────────────────── */
+    .w { max-width: 980px; margin: 0 auto; padding: 0 40px; }
+    .w-narrow { max-width: 680px; margin: 0 auto; padding: 0 40px; }
+
+    /* ─────────────────────────────────────────
+       NAV
+    ───────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.on {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-color: var(--z200);
+    }
+    .nav-w {
+      max-width: 980px; margin: 0 auto; padding: 0 40px;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-size: 13.5px; font-weight: 700; letter-spacing: -0.04em;
+      color: var(--fg); text-decoration: none;
+    }
+    .logo b { color: var(--acc); font-weight: 700; }
+    .nav-r { display: flex; align-items: center; gap: 28px; }
+    .nav-r a {
+      font-size: 13px; font-weight: 500; color: var(--z600);
+      text-decoration: none; transition: color 0.15s; letter-spacing: -0.01em;
+    }
+    .nav-r a:hover { color: var(--fg); }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--fg); color: #fff !important;
+      font-size: 12.5px; font-weight: 600; padding: 7px 16px;
+      border-radius: 980px; transition: background 0.15s, transform 0.15s;
+      letter-spacing: -0.01em;
+    }
+    .nav-btn:hover { background: var(--acc) !important; transform: translateY(-1px); }
+    .gh { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative; overflow: hidden;
+    }
+
+    /* Radial glow — very Apple */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -10%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse at center,
+        rgba(180,83,9,0.06) 0%,
+        rgba(180,83,9,0.03) 40%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 11.5px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 36px;
+      opacity: 0; animation: up 0.7s var(--ease) 0.1s forwards;
+    }
+    .hero-label::before {
+      content: '';
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--acc);
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 9vw, 88px);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1.02;
+      color: var(--fg);
+      margin-bottom: 28px;
+      max-width: 880px;
+      opacity: 0; animation: up 0.8s var(--ease) 0.2s forwards;
+    }
+    .hero h1 span { color: var(--z400); }
+
+    .hero-p {
+      font-size: 18px; font-weight: 400; line-height: 1.7;
+      color: var(--z600); max-width: 480px; margin: 0 auto 44px;
+      opacity: 0; animation: up 0.8s var(--ease) 0.32s forwards;
+    }
+    .hero-p strong { color: var(--fg); font-weight: 600; }
+
+    .hero-cta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; flex-wrap: wrap;
+      opacity: 0; animation: up 0.8s var(--ease) 0.44s forwards;
+    }
+
+    .btn-solid {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--fg); color: #fff;
+      font-family: var(--f); font-size: 13.5px; font-weight: 600;
+      padding: 11px 22px; border-radius: 980px;
+      text-decoration: none; letter-spacing: -0.02em;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-solid:hover {
+      background: var(--acc); transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(180,83,9,0.28);
+    }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: transparent; color: var(--z600);
+      font-family: var(--f); font-size: 13.5px; font-weight: 500;
+      padding: 11px 22px; border-radius: 980px;
+      border: 1px solid var(--z200);
+      text-decoration: none; letter-spacing: -0.02em;
+      transition: border-color 0.15s, color 0.15s, transform 0.15s;
+    }
+    .btn-outline:hover {
+      border-color: var(--z400); color: var(--fg); transform: translateY(-1px);
+    }
+
+    /* Stats strip */
+    .hero-stats {
+      display: flex; gap: 0; margin-top: 80px; width: 100%; max-width: 640px;
+      border: 1px solid var(--z200); border-radius: 16px; overflow: hidden;
+      opacity: 0; animation: up 0.8s var(--ease) 0.56s forwards;
+    }
+    .hstat {
+      flex: 1; padding: 22px 0; text-align: center;
+      border-right: 1px solid var(--z200);
+    }
+    .hstat:last-child { border-right: none; }
+    .hstat-n {
+      font-size: 26px; font-weight: 800; letter-spacing: -0.05em;
+      color: var(--fg); line-height: 1; margin-bottom: 4px;
+    }
+    .hstat-l {
+      font-size: 11px; font-weight: 500; color: var(--z400);
+      letter-spacing: 0.01em;
+    }
+
+    /* ─────────────────────────────────────────
+       SHARED SECTION STYLES
+    ───────────────────────────────────────── */
+    .s { padding: 128px 0; }
+    .s + .s { padding-top: 0; }
+    .divider { border: none; border-top: 1px solid var(--z200); }
+
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--acc); margin-bottom: 18px;
+    }
+    .sh {
+      font-size: clamp(32px, 5vw, 48px); font-weight: 800;
+      letter-spacing: -0.04em; line-height: 1.1; color: var(--fg);
+      margin-bottom: 18px;
+    }
+    .sp {
+      font-size: 17px; line-height: 1.75; color: var(--z600);
+    }
+    .sp strong { color: var(--fg); font-weight: 600; }
+
+    /* ─────────────────────────────────────────
+       PROBLEM SECTION
+    ───────────────────────────────────────── */
+    .prob-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--z200);
+      border: 1px solid var(--z200); border-radius: 20px;
+      overflow: hidden; margin-top: 64px;
+    }
+    .prob-cell {
+      background: var(--bg); padding: 36px 32px;
+      transition: background 0.2s;
+    }
+    .prob-cell:hover { background: var(--z50); }
+    .prob-cell.dark { background: var(--z800); }
+    .prob-cell.dark:hover { background: #111; }
+    .prob-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--z400); margin-bottom: 16px;
+    }
+    .prob-cell.dark .prob-num { color: #555; }
+    .prob-title {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.025em;
+      color: var(--fg); margin-bottom: 10px;
+    }
+    .prob-cell.dark .prob-title { color: #fff; }
+    .prob-body { font-size: 13.5px; line-height: 1.65; color: var(--z600); }
+    .prob-cell.dark .prob-body { color: #666; }
+
+    /* ─────────────────────────────────────────
+       FRAMEWORK
+    ───────────────────────────────────────── */
+    .fw-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: end; margin-bottom: 56px;
+    }
+    .vgrid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    }
+    .vcard {
+      border: 1px solid var(--z200); border-radius: 14px;
+      padding: 22px; transition: border-color 0.2s, transform 0.2s;
+    }
+    .vcard:hover { border-color: var(--acc); transform: translateY(-2px); }
+    .vcard-top {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 10px;
+    }
+    .vcard-name { font-size: 13.5px; font-weight: 700; letter-spacing: -0.025em; }
+    .vpill {
+      font-size: 10.5px; font-weight: 700; color: var(--acc);
+      background: var(--acc-dim); padding: 2px 9px; border-radius: 980px;
+    }
+    .vcard-desc { font-size: 12px; line-height: 1.6; color: var(--z400); }
+
+    .fw-cta { display: flex; align-items: center; gap: 16px; margin-top: 40px; }
+    .fw-note { font-size: 12.5px; color: var(--z400); letter-spacing: -0.01em; }
+
+    /* ─────────────────────────────────────────
+       STAGES
+    ───────────────────────────────────────── */
+    .stage-list { margin-top: 64px; }
+    .stage {
+      display: grid; grid-template-columns: 56px 1fr;
+      gap: 20px; padding: 36px 0;
+      border-bottom: 1px solid var(--z200); align-items: start;
+    }
+    .stage:first-child { border-top: 1px solid var(--z200); }
+    .stage-n {
+      font-size: 12px; font-weight: 800; color: var(--z200);
+      letter-spacing: -0.02em; padding-top: 5px; font-variant-numeric: tabular-nums;
+    }
+    .stage-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: var(--acc); margin-bottom: 10px;
+    }
+    .stage-title {
+      font-size: 19px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--fg); margin-bottom: 10px; line-height: 1.25;
+    }
+    .stage-text { font-size: 14.5px; line-height: 1.75; color: var(--z600); }
+
+    /* ─────────────────────────────────────────
+       ABOUT
+    ───────────────────────────────────────── */
+    .about-wrap { background: var(--z50); border-radius: 24px; padding: 72px; }
+    .about-grid {
+      display: grid; grid-template-columns: 240px 1fr;
+      gap: 72px; align-items: start;
+    }
+    .about-name {
+      font-size: 26px; font-weight: 800; letter-spacing: -0.04em;
+      color: var(--fg); line-height: 1.1; margin-bottom: 4px;
+    }
+    .about-role { font-size: 12px; font-weight: 600; color: var(--acc); margin-bottom: 24px; letter-spacing: 0.01em; }
+    .creds { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .creds li {
+      display: flex; align-items: baseline; gap: 9px;
+      font-size: 12.5px; color: var(--z600); line-height: 1.5;
+    }
+    .creds li::before {
+      content: ''; display: block;
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--z400); flex-shrink: 0; margin-top: 7px;
+    }
+    .about-text p {
+      font-size: 15.5px; line-height: 1.8; color: var(--z600); margin-bottom: 20px;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text strong { color: var(--fg); font-weight: 600; }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    footer { padding: 48px 0; border-top: 1px solid var(--z200); }
+    .foot-row {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 16px;
+    }
+    .foot-logo {
+      font-size: 13.5px; font-weight: 700; letter-spacing: -0.04em;
+      color: var(--fg); text-decoration: none;
+    }
+    .foot-logo b { color: var(--acc); }
+    .foot-links { display: flex; gap: 24px; }
+    .foot-links a {
+      font-size: 12.5px; color: var(--z400); text-decoration: none; transition: color 0.15s;
+    }
+    .foot-links a:hover { color: var(--fg); }
+    .foot-copy { font-size: 11.5px; color: var(--z400); }
+
+    /* ─────────────────────────────────────────
+       REVEAL ANIMATION
+    ───────────────────────────────────────── */
+    @keyframes up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .js .r {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+    }
+    .js .r.i { opacity: 1; transform: none; }
+    .js .r.t1 { transition-delay: 0.08s; }
+    .js .r.t2 { transition-delay: 0.16s; }
+    .js .r.t3 { transition-delay: 0.24s; }
+    .js .r.t4 { transition-delay: 0.32s; }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    /* ── CTA SECTION ── */
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      background: var(--fg);
+      padding: 128px 0;
+    }
+    .cta-inner {
+      text-align: center;
+    }
+    .cta-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--acc);
+      margin-bottom: 20px;
+    }
+    .cta-h {
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.04;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .cta-sub {
+      font-size: 17px;
+      line-height: 1.65;
+      color: #71717a;
+      max-width: 560px;
+      margin: 0 auto 48px;
+    }
+    .cta-sub strong { color: #a1a1aa; }
+    .cta-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .btn-amber {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--acc);
+      color: #fff;
+      font-family: var(--f);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 980px;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-amber:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(180,83,9,0.4);
+    }
+    .btn-dark-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: #a1a1aa;
+      font-family: var(--f);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 980px;
+      border: 1px solid #27272a;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-dark-outline:hover {
+      border-color: #52525b;
+      color: #e4e4e7;
+    }
+    .btn-dark-outline .gh {
+      width: 16px; height: 16px;
+      fill: currentColor;
+    }
+    .cta-note {
+      font-size: 13px;
+      color: #3f3f46;
+      margin-top: 8px;
+    }
+
+    /* ── CTA CARDS ── */
+    .cta-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #1f1f1f;
+      border: 1px solid #1f1f1f;
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 0 auto 44px;
+      max-width: 780px;
+      text-align: left;
+    }
+    .cta-card {
+      background: #111111;
+      padding: 28px 24px;
+      transition: background 0.2s;
+    }
+    .cta-card:hover { background: #161616; }
+    .cta-card-icon {
+      font-size: 7px;
+      color: var(--acc);
+      margin-bottom: 14px;
+      display: block;
+      letter-spacing: 0;
+    }
+    .cta-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #e5e7eb;
+      margin-bottom: 8px;
+    }
+    .cta-card-body {
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: #52525b;
+    }
+
+    /* ── CTA SECTION ── */
+    /* ── CTA CARDS ── */
+    .cta-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #222;
+      border: 1px solid #222;
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 0 auto 44px;
+      max-width: 760px;
+      text-align: left;
+    }
+    .cta-card { background: #111; padding: 28px 22px; transition: background 0.2s; }
+    .cta-card:hover { background: #181818; }
+    .cta-card-icon { font-size: 7px; color: var(--acc); margin-bottom: 14px; display: block; }
+    .cta-card-title { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; color: #e5e7eb; margin-bottom: 8px; }
+    .cta-card-body { font-size: 12.5px; line-height: 1.65; color: #555; }
+    /* ── LET'S TALK BUTTON VARIANTS ── */
+    .nav-talk {
+      background: var(--acc) !important;
+    }
+    .nav-talk:hover {
+      background: #92400e !important;
+    }
+    .together-cta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 48px;
+      padding-top: 40px;
+      border-top: 1px solid var(--z200);
+      flex-wrap: wrap;
+    }
+    .btn-talk {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--acc);
+      color: #fff;
+      font-family: var(--f);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 980px;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-talk:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(180,83,9,0.35);
+    }
+    .together-note {
+      font-size: 13px;
+      color: var(--z400);
+      font-style: italic;
+    }
+    .foot-talk {
+      font-weight: 700 !important;
+      color: var(--acc) !important;
+    }
+    .foot-talk:hover {
+      color: #92400e !important;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — ALL BREAKPOINTS
+       320px  Small Android
+       375px  iPhone SE / older iPhones
+       390px  iPhone 14/15
+       430px  iPhone 14/15 Plus
+       768px  iPad portrait
+       1024px iPad landscape / small laptop
+       1280px Standard laptop
+       1440px+ Large desktop
+    ═══════════════════════════════════════════ */
+
+    /* ── LARGE DESKTOP (1440px+) ── */
+    @media (min-width: 1440px) {
+      .w { max-width: 1100px; }
+      .hero h1 { font-size: 96px; }
+      .hero::before { width: 1100px; height: 700px; }
+    }
+
+    /* ── TABLET LANDSCAPE / SMALL LAPTOP (900px–1100px) ── */
+    @media (max-width: 1100px) {
+      .fw-header { gap: 48px; }
+      .about-grid { grid-template-columns: 220px 1fr; gap: 48px; }
+      .about-wrap { padding: 56px 48px; }
+    }
+
+    /* ── TABLET PORTRAIT (768px–900px) ── */
+    @media (max-width: 900px) {
+      .hero h1 { font-size: clamp(44px, 8vw, 64px); }
+      .fw-header {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 40px;
+      }
+      .vgrid { grid-template-columns: 1fr 1fr; }
+      .prob-grid { grid-template-columns: 1fr 1fr; }
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .about-wrap { padding: 48px 40px; border-radius: 16px; }
+      .about-left { position: static; }
+      .cta-cards { grid-template-columns: 1fr; max-width: 480px; }
+      .stage { grid-template-columns: 44px 1fr; }
+      .together-cta { flex-direction: column; align-items: flex-start; gap: 14px; }
+    }
+
+    /* ── MOBILE (≤700px) ── */
+    @media (max-width: 700px) {
+      .w, .w-narrow { padding: 0 20px; }
+      .s { padding: 80px 0; }
+
+      /* Nav */
+      .nav-w { padding: 0 20px; }
+      .nav-r a:not(.nav-btn):not(.nav-talk) { display: none; }
+      .nav-btn, .nav-talk {
+        font-size: 11.5px;
+        padding: 6px 12px;
+      }
+
+      /* Hero */
+      .hero { padding: 96px 20px 60px; text-align: left; }
+      .hero::before { display: none; }
+      .hero-label { font-size: 10.5px; }
+      .hero h1 { font-size: clamp(38px, 10vw, 52px); margin-bottom: 20px; }
+      .hero-p { font-size: 16px; margin-bottom: 36px; }
+      .hero-cta { justify-content: flex-start; }
+      .hero-cta .btn-solid,
+      .hero-cta .btn-outline { font-size: 13px; padding: 10px 18px; }
+      .hero-stats {
+        flex-wrap: wrap;
+        margin-top: 48px;
+      }
+      .hstat {
+        min-width: 50%;
+        border-right: none;
+        border-bottom: 1px solid var(--z200);
+        padding: 18px 0;
+      }
+      .hstat:nth-child(odd) { border-right: 1px solid var(--z200); padding-left: 0; }
+      .hstat:nth-child(3),
+      .hstat:nth-child(4) { border-bottom: none; }
+      .hstat-n { font-size: 22px; }
+
+      /* Sections */
+      .sh { font-size: clamp(28px, 8vw, 38px); }
+      .sp { font-size: 15.5px; }
+      .eyebrow { font-size: 10.5px; }
+
+      /* Problem grid */
+      .prob-grid { grid-template-columns: 1fr; border-radius: 14px; }
+      .prob-cell { padding: 28px 24px; }
+
+      /* Framework */
+      .fw-header { grid-template-columns: 1fr; gap: 28px; margin-bottom: 32px; }
+      .vgrid { grid-template-columns: 1fr; gap: 8px; }
+      .vcard { padding: 20px; }
+      .fw-cta { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .fw-note { font-size: 12px; }
+
+      /* Stages */
+      .stage { grid-template-columns: 36px 1fr; gap: 14px; padding: 28px 0; }
+      .stage-n { font-size: 11px; }
+      .stage-title { font-size: 17px; }
+      .stage-text { font-size: 14px; }
+      .together-cta { flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 36px; padding-top: 32px; }
+
+      /* About */
+      .about-wrap { padding: 36px 24px; border-radius: 14px; }
+      .about-grid { grid-template-columns: 1fr; gap: 32px; }
+      .about-name { font-size: 24px; }
+      .about-text p { font-size: 15px; }
+
+      /* CTA */
+      .cta-section { padding: 80px 0; }
+      .cta-h { font-size: clamp(32px, 9vw, 48px); }
+      .cta-sub { font-size: 15px; }
+      .cta-cards { grid-template-columns: 1fr; max-width: 100%; border-radius: 12px; }
+      .cta-card { padding: 24px 20px; }
+      .cta-btns { flex-direction: column; align-items: stretch; }
+      .btn-amber, .btn-dark-outline { justify-content: center; padding: 13px 20px; }
+
+      /* Footer */
+      .foot-row { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .foot-links { flex-wrap: wrap; gap: 16px; }
+    }
+
+    /* ── SMALL PHONE (≤390px) ── */
+    @media (max-width: 390px) {
+      .hero h1 { font-size: 36px; }
+      .nav-talk { display: none; }
+      .sh { font-size: 28px; }
+      .hstat { padding: 16px 0; }
+      .hstat-n { font-size: 20px; }
+      .btn-talk { font-size: 13px; padding: 11px 20px; }
+    }
+
+    /* ── VERY SMALL (≤360px) ── */
+    @media (max-width: 360px) {
+      .w, .w-narrow { padding: 0 16px; }
+      .hero h1 { font-size: 32px; }
+      .hero-p { font-size: 15px; }
+      .nav-btn { display: none; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-w">
+    <a href="#" class="logo">antigenic<b>.analytics</b></a>
+    <div class="nav-r">
+      <a href="#framework">Framework</a>
+      <a href="#together">Work Together</a>
+      <a href="#about">About</a>
+      <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="nav-btn nav-talk">Let's Talk</a>
+      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="nav-btn">
+        <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Open Source · Apache 2.0</div>
+  <h1>Find the fraud<br/><span>your tools missed.</span></h1>
+  <p class="hero-p">
+    Hi, I'm Austin. I spent years catching fraud at Fortune 50 companies.
+    <strong>The sophisticated stuff always slipped through.</strong>
+    So I built a free, open-source SQL framework to catch it.
+  </p>
+  <div class="hero-cta">
+    <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="btn-solid">
+      <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      Explore the Framework
+    </a>
+    <a href="#framework" class="btn-outline">See what it detects ↓</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n">35</div><div class="hstat-l">Signals</div></div>
+    <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">Verticals</div></div>
+    <div class="hstat"><div class="hstat-n">40K</div><div class="hstat-l">Demo rows</div></div>
+    <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Always</div></div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- PROBLEM -->
+<section class="s" id="problem">
+  <div class="w">
+    <div class="w-narrow" style="padding: 0;">
+      <div class="eyebrow r">The Problem</div>
+      <h2 class="sh r t1">The fraud costing you the most<br/>is the kind built to evade you.</h2>
+      <p class="sp r t2">Sophisticated fraudsters don't trip your rules — they reverse-engineer them. They stay below thresholds, rotate patterns, and blend into normal behavior. <strong>Behavioral signals catch what rules and scores structurally can't.</strong></p>
+    </div>
+    <div class="prob-grid r t3">
+      <div class="prob-cell">
+        <div class="prob-num">01</div>
+        <div class="prob-title">Rule-based systems</div>
+        <div class="prob-body">Catch exactly what they were programmed for. Nothing more. Sophisticated fraud is engineered specifically to stay just below the thresholds you've set.</div>
+      </div>
+      <div class="prob-cell">
+        <div class="prob-num">02</div>
+        <div class="prob-title">ML black boxes</div>
+        <div class="prob-body">Return a score, not an explanation. When your CFO asks why a vendor was flagged, "the model said so" isn't an answer you can act on or defend.</div>
+      </div>
+      <div class="prob-cell">
+        <div class="prob-num">03</div>
+        <div class="prob-title">Point-in-time audits</div>
+        <div class="prob-body">Miss fraud designed to stay below monthly review thresholds. The pattern only surfaces across 6–12 months of behavioral data — not a snapshot.</div>
+      </div>
+      <div class="prob-cell dark">
+        <div class="prob-num">→</div>
+        <div class="prob-title">What's actually needed</div>
+        <div class="prob-body">Explainable behavioral signals, computed from your own data, with verdicts clear enough to walk into any executive meeting and defend line by line.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- FRAMEWORK -->
+<section class="s" id="framework">
+  <div class="w">
+    <div class="fw-header">
+      <div>
+        <div class="eyebrow r">The Framework</div>
+        <h2 class="sh r t1" style="margin-bottom: 0;">35 signals.<br/>4 verticals.<br/>All open source.</h2>
+      </div>
+      <div>
+        <p class="sp r t1" style="font-size: 15.5px; margin-bottom: 16px;">
+          Edit one Mapping CTE to match your schema. The detection logic runs as-is. Pure SELECT statements — nothing writes to your database.
+        </p>
+        <p class="sp r t2" style="font-size: 15.5px;">
+          Every flag comes with a <strong>Glass Box verdict</strong> — the exact behavioral reason it fired. Not a score. An explanation you can stand behind.
+        </p>
+      </div>
+    </div>
+
+    <div class="vgrid">
+      <div class="vcard r">
+        <div class="vcard-top"><div class="vcard-name">Procurement & AP</div><div class="vpill">10 signals</div></div>
+        <div class="vcard-desc">Vendor collusion, sub-threshold batching, approval compression, network clustering, period boundary spikes, Benford's Law deviation.</div>
+      </div>
+      <div class="vcard r t1">
+        <div class="vcard-top"><div class="vcard-name">Payments & Gateways</div><div class="vpill">10 signals</div></div>
+        <div class="vcard-desc">Card testing, BIN attacks, refund abuse, velocity fraud, friendly fraud, triangulation, account takeover, synthetic transactions.</div>
+      </div>
+      <div class="vcard r t2">
+        <div class="vcard-top"><div class="vcard-name">Loyalty & Rewards</div><div class="vpill">10 signals</div></div>
+        <div class="vcard-desc">Point farming, referral rings, tier gaming, points laundering, bonus multiplier exploitation, compromised account redemption.</div>
+      </div>
+      <div class="vcard r t3">
+        <div class="vcard-top"><div class="vcard-name">Identity & Origination</div><div class="vpill">5 signals</div></div>
+        <div class="vcard-desc">Synthetic identity, KYC bypass indicators, velocity at origination, mule account detection, bust-out pattern detection.</div>
+      </div>
+    </div>
+
+    <div class="fw-cta r">
+      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="btn-solid">
+        <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        Browse the Repo
+      </a>
+      <span class="fw-note">Includes 40,000 rows of synthetic demo data. Run it before connecting production.</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- WORKING TOGETHER -->
+<section class="s" id="together">
+  <div class="w">
+    <div class="w-narrow" style="padding: 0;">
+      <div class="eyebrow r">Working Together</div>
+      <h2 class="sh r t1">Start with the repo.<br/>Go as deep as you need.</h2>
+      <p class="sp r t2">I designed this so you get real value without ever talking to me. But if you want to go further — or just want a faster path to real detections — there's a clear path. <strong style="color:var(--fg)">Stage 2 starts with a 30-minute call.</strong></p>
+    </div>
+    <div class="stage-list">
+      <div class="stage r">
+        <div class="stage-n">01</div>
+        <div>
+          <div class="stage-tag">Free · Self-serve</div>
+          <div class="stage-title">Clone the framework and run it yourself</div>
+          <div class="stage-text">Load the synthetic data, watch the signals fire, then map your own schema. Every threshold is documented, every signal has a behavioral rationale. Five minutes of mapping and you're running against production data.</div>
+        </div>
+      </div>
+      <div class="stage r t1">
+        <div class="stage-n">02</div>
+        <div>
+          <div class="stage-tag">Paid Engagement</div>
+          <div class="stage-title">Bring me in to tune it to your environment</div>
+          <div class="stage-text">I'll map the framework to your schema, calibrate thresholds to your transaction volume, run the full signal stack against your historical data, and quantify your actual exposure — documented and ready for your CFO.</div>
+        </div>
+      </div>
+      <div class="stage r t2">
+        <div class="stage-n">03</div>
+        <div>
+          <div class="stage-tag">Product Build</div>
+          <div class="stage-title">Turn it into an internal detection product</div>
+          <div class="stage-text">For teams that want ongoing detection, I can build a scheduled pipeline, a Snowflake native app, or a lightweight dashboard. Your analysts run investigations — the framework runs continuously in the background.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="together-cta r t3">
+      <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-talk">
+        &#128197;&nbsp; Let&rsquo;s Talk
+      </a>
+      <span class="together-note">30 minutes. No pitch. Just your data and a plan.</span>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ABOUT -->
+<section class="s" id="about">
+  <div class="w">
+    <div class="about-wrap r">
+      <div class="about-grid">
+        <div>
+          <div class="about-name">Austin<br/>Ocampo</div>
+          <div class="about-role">Founder, Antigenic Analytics</div>
+          <ul class="creds">
+            <li>B.S. Econometrics & Psychology — UC Irvine</li>
+            <li>Sr. Fraud Analyst at 3 Fortune 50 companies</li>
+            <li>Specialist in behavioral signal detection</li>
+            <li>Based in Los Angeles, CA</li>
+          </ul>
+        </div>
+        <div class="about-text">
+          <p>I've spent my career inside the fraud teams of some of the largest companies in the world. The problem I kept running into wasn't a lack of tools — it was that <strong>every tool was optimized for the fraud it had already seen.</strong></p>
+          <p>Antigenic Analytics is named after antigenic variation — the biological mechanism by which pathogens mutate their surface proteins to evade immune detection. Sophisticated fraudsters do the same: they study your detection systems and adapt specifically to stay below your thresholds.</p>
+          <p>My background in econometrics and psychology means every signal has a statistical foundation and a behavioral rationale — <strong>not just a threshold someone guessed at.</strong></p>
+          <p>I built this open source because the best proof is letting you run it yourself. No demo calls. No pitch decks. <strong>The repo is the pitch.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="w">
+    <div class="cta-inner r">
+      <span class="cta-eyebrow">Book a Consultation</span>
+      <h2 class="cta-h">Let&rsquo;s find out what<br/>your data is hiding.</h2>
+      <p class="cta-sub">
+        A focused 30-minute call. We&rsquo;ll look at your environment,
+        identify which verticals carry the most risk, and
+        <strong>leave with a concrete plan for running the framework against your data.</strong>
+      </p>
+
+      <div class="cta-cards">
+        <div class="cta-card">
+          <div class="cta-card-icon">&#9679;</div>
+          <div class="cta-card-title">What we cover</div>
+          <div class="cta-card-body">Your fraud environment, current tooling gaps, which signals apply to your data, and what a tuned deployment looks like for your team.</div>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">&#9679;</div>
+          <div class="cta-card-title">What you walk away with</div>
+          <div class="cta-card-body">A clear signal priority list, estimated exposure range in dollar terms, and a step-by-step plan to get the framework running in production.</div>
+        </div>
+        <div class="cta-card">
+          <div class="cta-card-icon">&#9679;</div>
+          <div class="cta-card-title">No obligation</div>
+          <div class="cta-card-body">The framework is free regardless. This call is for teams that want a faster path from repo to real detections &mdash; with someone who&rsquo;s done it before.</div>
+        </div>
+      </div>
+
+      <div class="cta-btns">
+        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-amber">
+          &#128197;&nbsp; Book a 30-Min Call
+        </a>
+        <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="btn-dark-outline">
+          <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          Explore the Repo First
+        </a>
+      </div>
+      <p class="cta-note">Prefer email? austinocampo47@gmail.com</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="w">
+    <div class="foot-row">
+      <a href="#" class="foot-logo">antigenic<b>.analytics</b></a>
+      <div class="foot-links">
+        <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank">GitHub</a>
+        <a href="#framework">Framework</a>
+        <a href="#about">About</a>
+        <a href="mailto:austinocampo47@gmail.com">Contact</a>
+        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="foot-talk">Let's Talk ↗</a>
+      </div>
+    </div>
+    <div class="foot-copy">Open source under Apache License 2.0 — free to use, modify, and deploy commercially.</div>
+  </div>
+</footer>
+<script>
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('on', scrollY > 16), { passive: true });
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('i'); ro.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.r').forEach(el => ro.observe(el));
+</script>
+</body>
+</html>
