@@ -31,7 +31,7 @@ Map your internal column names to the framework's normalized schema. This is the
 **Part 2 — The Detection Logic (Do not alter)**
 The Antigenic Analytics behavioral signal logic. It references only the mapped CTE from Part 1. Once your columns are mapped, this runs as-is.
 
-This architecture means a single 5-minute mapping exercise makes every query in the vertical plug-and-play against your schema. The universal mapping template is available at [`/shared_utilities/mapping_cte_master_template.sql`](./shared_utilities/mapping_cte_master_template.sql).
+This architecture means a single 5-minute mapping exercise makes every query in the vertical plug-and-play against your schema. The universal mapping template is available at [./_resources/shared_utilities/mapping_cte_master_template.sql`](./_resources/shared_utilities/mapping_cte_master_template.sql).
 
 ---
 
@@ -150,8 +150,8 @@ Open any `.sql` file. Edit the Mapping CTE at the top. Run against your warehous
 
 | File | Purpose |
 | --- | --- |
-| [`/shared_utilities/mapping_cte_master_template.sql`](./shared_utilities/mapping_cte_master_template.sql) | Universal schema mapping template for any vertical |
-| [`/shared_utilities/signal_stacking_master.sql`](./shared_utilities/signal_stacking_master.sql) | Aggregate signal outputs into a composite risk score |
+| [./_resources/shared_utilities/mapping_cte_master_template.sql`](./_resources/shared_utilities/mapping_cte_master_template.sql) | Universal schema mapping template for any vertical |
+| [./_resources/shared_utilities/signal_stacking_master.sql`](./_resources/shared_utilities/signal_stacking_master.sql) | Aggregate signal outputs into a composite risk score |
 
 ---
 
