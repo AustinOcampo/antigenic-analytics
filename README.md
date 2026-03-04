@@ -11,13 +11,13 @@ Antigenic Analytics is an open-source SQL framework for detecting behavioral fra
 This repository is organized by **environment**, not by technique. Find your jurisdiction first.
 
 | Directory | Buyer | Data Source |
-|---|---|---|
-| [`/procurement_and_ap`](./procurement_and_ap/) | CFO, VP Internal Audit, Compliance | SAP, Oracle, NetSuite, Coupa |
-| [`/payments_and_gateways`](./payments_and_gateways/) | Head of Risk, VP Operations, Fraud Manager | Stripe, Adyen, Shopify, Braintree |
-| [`/loyalty_and_rewards`](./loyalty_and_rewards/) | Head of Loyalty, VP Customer, CMO | Loyalty platforms, CRM, point ledgers |
-| [`/identity_and_origination`](./identity_and_origination/) | Chief Risk Officer, Head of Compliance | KYC systems, onboarding logs, core banking |
+| --- | --- | --- |
+| [`/loyalty_rewards_and_promotion`](/loyalty_rewards_and_promotion) | Head of Loyalty, VP Customer Experience, Growth | Loyalty platforms, CRM, point ledgers, promo engines |
+| [`/ecommerce_and_payments`](/ecommerce_and_payments) | Head of Risk, VP Operations, Fraud Manager | Stripe, Adyen, Shopify, Braintree |
+| [`/marketplace_and_platform`](/marketplace_and_platform) | VP Trust & Safety, Head of Marketplace Ops | Platform transaction logs, seller systems, review data |
+| [`/subscription_and_billing`](/subscription_and_billing) | Head of Growth, VP Finance, Revenue Ops | Billing systems, subscription platforms, usage logs |
 
-If you are unsure where to start, you are most likely in `/procurement_and_ap`.
+If you are unsure where to start, you are most likely in `/ecommerce_and_payments`.
 
 ---
 
@@ -31,14 +31,15 @@ Map your internal column names to the framework's normalized schema. This is the
 **Part 2 — The Detection Logic (Do not alter)**
 The Antigenic Analytics behavioral signal logic. It references only the mapped CTE from Part 1. Once your columns are mapped, this runs as-is.
 
-This architecture means a single 5-minute mapping exercise makes every query in the vertical plug-and-play against your schema. The universal mapping template is available at [`/shared_utilities/mapping_cte_master_template.sql`](./shared_utilities/mapping_cte_master_template.sql).
+This architecture means a single 5-minute mapping exercise makes every query in the vertical plug-and-play against your schema. The universal mapping template is available at [`/shared_utilities/mapping_cte_master_template.sql`](/shared_utilities/mapping_cte_master_template.sql).
 
 ---
 
 ## Getting Started in 3 Steps
 
 **Step 1 — Clone the repo**
-```bash
+
+```
 git clone https://github.com/AustinOcampo/antigenic-analytics.git
 ```
 
@@ -50,72 +51,84 @@ Open any `.sql` file. Edit the Mapping CTE at the top. Run against your warehous
 
 ---
 
-## The 35 Signals
+## The 43 Signals
 
-### Procurement & AP — 10 Signals
-*For: CFO, VP Internal Audit, Compliance | Data: SAP, Oracle, NetSuite, Coupa*
+### Loyalty, Rewards & Promotion Fraud — 13 Signals
 
-| Signal | Typical Exposure |
-|---|---|
-| [Vendor Concentration Ratio](./procurement_and_ap/vendor_concentration/) | $50K–$2M |
-| [Sub-Threshold Batching](./procurement_and_ap/sub_threshold_batching/) | $25K–$500K |
-| [Billing Code Cycling](./procurement_and_ap/billing_code_cycling/) | $100K–$1M+ |
-| [Network Clustering](./procurement_and_ap/network_clustering/) | $200K–$5M |
-| [Period Boundary Spikes](./procurement_and_ap/period_boundary_spikes/) | $50K–$750K |
-| [Service-to-Outcome Mismatch](./procurement_and_ap/service_outcome_mismatch/) | $75K–$1M |
-| [Approval Chain Compression](./procurement_and_ap/approval_chain_compression/) | $100K–$2M |
-| [New Vendor Ramp](./procurement_and_ap/new_vendor_ramp/) | $50K–$500K |
-| [Duplicate Billing (Morphed)](./procurement_and_ap/duplicate_billing/) | 100% recoverable |
-| [Benford's Law Deviation](./procurement_and_ap/benfords_law/) | Population scoping |
+*For: Head of Loyalty, VP Customer Experience, Growth | Data: Loyalty platforms, CRM, point ledgers, promo engines*
+
+| Signal | What It Catches |
+| --- | --- |
+| Point Farming | Accounts earning points at volumes no real customer could organically generate |
+| Referral Ring Detection | Fake referral networks where the same devices or addresses keep showing up |
+| Tier Gaming | Users manipulating tier qualifications to unlock benefits they didn't earn |
+| Points Laundering | Points moved through chains of accounts to obscure where they originated |
+| Bonus Multiplier Exploitation | Bonus promotions triggered repeatedly using coordinated timing and multiple accounts |
+| Dormant Account Harvesting | Dormant accounts suddenly reactivated and drained of accumulated value |
+| Compromised Account Redemption | Redemptions happening from locations or devices the real member has never used |
+| Synthetic Member Detection | New accounts created with synthetic identities just to harvest sign-up bonuses |
+| Cross-Program Arbitrage | Members exploiting gaps between partner programs to double-dip on value |
+| Redemption Velocity Abuse | Velocity patterns in earning or redemption that no legitimate shopping behavior explains |
+| Promo Code Stacking | Promo codes stacked or reused in ways the platform never intended to allow |
+| First-Time Discount Farming | Fake accounts created solely to harvest first-time customer discounts repeatedly |
+| Coupon Network Distribution | Coupon codes resold or distributed through networks outside your intended audience |
 
 ---
 
-### Payments & Gateways — 10 Signals
+### E-Commerce & Payments Fraud — 10 Signals
+
 *For: Head of Risk, VP Operations, Fraud Manager | Data: Stripe, Adyen, Shopify, Braintree*
 
-| Signal | Typical Exposure |
-|---|---|
-| [Refund Abuse](./payments_and_gateways/refund_abuse/) | $10K–$500K |
-| [Promo Farming](./payments_and_gateways/promo_farming/) | $25K–$250K |
-| [Card Testing](./payments_and_gateways/card_testing/) | Processor penalties |
-| [Velocity Fraud](./payments_and_gateways/velocity_fraud/) | $50K–$1M |
-| [Friendly Fraud — Chargeback Abuse](./payments_and_gateways/friendly_fraud/) | $15K–$300K |
-| [Triangulation Fraud](./payments_and_gateways/triangulation_fraud/) | $50K–$500K |
-| [BIN Attacks](./payments_and_gateways/bin_attacks/) | Scheme penalties |
-| [Account Takeover at Checkout](./payments_and_gateways/account_takeover/) | $20K–$200K |
-| [Return Fraud](./payments_and_gateways/return_fraud/) | $10K–$150K |
-| [Synthetic Transaction Patterns](./payments_and_gateways/synthetic_transactions/) | $100K–$2M |
+| Signal | What It Catches |
+| --- | --- |
+| Card Testing | Thousands of small-dollar authorizations testing stolen cards against your checkout |
+| BIN Attacks | Coordinated attacks targeting specific card ranges to find valid numbers |
+| Refund Abuse | Refund requests that look legitimate individually but form patterns of organized abuse |
+| Velocity Fraud | Transaction volumes from single accounts or devices that no real customer would generate |
+| Friendly Fraud | Customers disputing charges they actually made, knowing you'll eat the loss |
+| Triangulation Fraud | Stolen goods purchased on your site and resold through a third party |
+| Account Takeover | Legitimate accounts quietly taken over and used before the real customer notices |
+| Synthetic Transactions | Transactions that look normal on paper but were never initiated by a real human |
+| Chargeback Farming | Serial disputants cycling through payment methods to repeat the same scheme |
+| Payment Method Cycling | Users rotating cards, emails, and devices to look like new customers every time |
 
 ---
 
-### Loyalty & Rewards — 10 Signals
-*For: Head of Loyalty, VP Customer Experience, CMO | Data: Loyalty platforms, CRM, point ledgers*
+### Marketplace & Platform Fraud — 10 Signals
 
-| Signal | Typical Exposure |
-|---|---|
-| [Point Farming](./loyalty_and_rewards/point_farming/) | $10K–$200K |
-| [Redemption Velocity Abuse](./loyalty_and_rewards/redemption_velocity/) | $15K–$150K |
-| [Referral Ring Detection](./loyalty_and_rewards/referral_rings/) | $25K–$500K |
-| [Account Sharing / Pooling](./loyalty_and_rewards/account_sharing/) | $10K–$100K |
-| [Tier Gaming](./loyalty_and_rewards/tier_gaming/) | $20K–$300K |
-| [Points Laundering](./loyalty_and_rewards/points_laundering/) | $50K–$500K |
-| [Bonus Multiplier Exploitation](./loyalty_and_rewards/bonus_multiplier_exploitation/) | $15K–$250K |
-| [Synthetic Account Origination](./loyalty_and_rewards/synthetic_account_origination/) | $20K–$200K |
-| [Compromised Account Redemption](./loyalty_and_rewards/compromised_account_redemption/) | $10K–$150K |
-| [Return + Reaccrue Cycling](./loyalty_and_rewards/return_reaccrue_cycling/) | $10K–$100K |
+*For: VP Trust & Safety, Head of Marketplace Ops | Data: Platform transaction logs, seller systems, review data*
+
+| Signal | What It Catches |
+| --- | --- |
+| Seller Collusion Rings | Seller accounts operating in coordination to inflate ratings and suppress competitors |
+| Fake Listing Velocity | New listings appearing at volumes that suggest automated or templated creation |
+| Commission Manipulation | Sellers manipulating fee structures or commission tiers to keep more than they should |
+| Review Fraud Clustering | Clusters of reviews tied to the same devices, IPs, or behavioral fingerprints |
+| Return Abuse Networks | Organized return abuse where buyers and sellers collude to extract refunds |
+| Account Flipping | Accounts created, built up with fake reputation, then sold to bad actors |
+| Promotional Stacking | Stacking multiple promotions in ways the platform never intended to allow |
+| GMV Inflation | Sellers inflating gross merchandise volume with fake or circular transactions |
+| Buyer-Seller Coordination | Buyer-seller pairs transacting in patterns that suggest coordinated manipulation |
+| Fee Avoidance Schemes | Systematic structuring of transactions to avoid platform fees or reporting thresholds |
 
 ---
 
-### Identity & Origination — 5 Signals
-*For: Chief Risk Officer, Head of Compliance, VP Fraud | Data: KYC systems, onboarding logs, core banking*
+### Subscription & Recurring Billing Fraud — 10 Signals
 
-| Signal | Typical Exposure |
-|---|---|
-| [Synthetic Identity Detection](./identity_and_origination/synthetic_identity/) | $5K–$50K per account |
-| [Velocity at Origination](./identity_and_origination/velocity_at_origination/) | $10K–$500K per ring |
-| [KYC Bypass Indicators](./identity_and_origination/kyc_bypass_indicators/) | $5K–$100K per account |
-| [Mule Account Detection](./identity_and_origination/mule_account_detection/) | $20K–$1M per network |
-| [First-Party Fraud — Bust-Out Pattern](./identity_and_origination/bust_out_pattern/) | $10K–$200K per account |
+*For: Head of Growth, VP Finance, Revenue Ops | Data: Billing systems, subscription platforms, usage logs*
+
+| Signal | What It Catches |
+| --- | --- |
+| Trial Abuse Cycling | Free trial signups from the same devices and payment fingerprints cycling through new accounts endlessly |
+| Recurring Dispute Abuse | Users disputing recurring charges months into a subscription they actively used |
+| Credential Sharing Detection | Credential sharing patterns where a single account is accessed from dozens of locations simultaneously |
+| Promo Window Exploitation | Bulk account creation timed to coincide with promotional pricing windows |
+| Payment Decay Patterns | Payment methods that succeed for the trial period then conveniently fail before the first real charge |
+| Tier Manipulation | Accounts downgrading and upgrading in patterns designed to exploit billing gaps between tiers |
+| Renewal Refund Timing | Refund requests clustered around renewal dates from users who consumed the full billing period |
+| Untraceable Payment Methods | Gift cards and prepaid methods used specifically to avoid traceability on recurring charges |
+| Plan Stacking | Coordinated signups that share behavioral fingerprints but use different identities to stack family or team plans |
+| Churn-and-Return Cycling | Accounts that hit usage limits, churn, re-sign up under a new identity, and repeat the cycle |
 
 ---
 
@@ -136,15 +149,15 @@ Open any `.sql` file. Edit the Mapping CTE at the top. Run against your warehous
 ## Shared Utilities
 
 | File | Purpose |
-|---|---|
-| [`/shared_utilities/mapping_cte_master_template.sql`](./shared_utilities/mapping_cte_master_template.sql) | Universal schema mapping template for any vertical |
-| [`/shared_utilities/signal_stacking_master.sql`](./shared_utilities/signal_stacking_master.sql) | Aggregate AP signal outputs into a composite risk score |
+| --- | --- |
+| [`/shared_utilities/mapping_cte_master_template.sql`](/shared_utilities/mapping_cte_master_template.sql) | Universal schema mapping template for any vertical |
+| [`/shared_utilities/signal_stacking_master.sql`](/shared_utilities/signal_stacking_master.sql) | Aggregate signal outputs into a composite risk score |
 
 ---
 
 ## License
 
-Apache License 2.0 — See [`LICENSE`](./LICENSE)
+Apache License 2.0 — See [`LICENSE`](/LICENSE)
 
 You may use, modify, and deploy these queries commercially. Attribution appreciated but not required.
 
@@ -152,8 +165,8 @@ You may use, modify, and deploy these queries commercially. Attribution apprecia
 
 ## About Antigenic Analytics
 
-Antigenic Analytics is a behavioral forensics advisory firm. We help mid-market companies identify fraud patterns their existing detection tools are structurally unable to see.
+Antigenic Analytics is a behavioral fraud detection framework for e-commerce, marketplace, and subscription businesses. We help mid-market companies identify fraud patterns their existing detection tools are structurally unable to see.
 
 The name comes from antigenic variation — the biological mechanism by which pathogens mutate their surface proteins to evade immune detection. Sophisticated fraudsters do the same thing: they adapt their methods specifically to stay below the detection thresholds of the tools watching them. This framework is designed to detect the behavior underneath the surface — the patterns that don't change even when the tactics do.
 
-**Website:** [antigenic-analytics.com](https://antigenic-analytics.com)
+**Website:** [austinocampo.github.io/antigenic-analytics](https://austinocampo.github.io/antigenic-analytics)
