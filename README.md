@@ -12,10 +12,10 @@ This repository is organized by **environment**, not by technique. Find your jur
 
 | Directory | Buyer | Data Source |
 | --- | --- | --- |
-| [`/loyalty_rewards_and_promotion`](/loyalty_rewards_and_promotion) | Head of Loyalty, VP Customer Experience, Growth | Loyalty platforms, CRM, point ledgers, promo engines |
-| [`/ecommerce_and_payments`](/ecommerce_and_payments) | Head of Risk, VP Operations, Fraud Manager | Stripe, Adyen, Shopify, Braintree |
-| [`/marketplace_and_platform`](/marketplace_and_platform) | VP Trust & Safety, Head of Marketplace Ops | Platform transaction logs, seller systems, review data |
-| [`/subscription_and_billing`](/subscription_and_billing) | Head of Growth, VP Finance, Revenue Ops | Billing systems, subscription platforms, usage logs |
+| [`/loyalty_rewards_and_promotion`](./loyalty_rewards_and_promotion/) | Head of Loyalty, VP Customer Experience, Growth | Loyalty platforms, CRM, point ledgers, promo engines |
+| [`/ecommerce_and_payments`](./ecommerce_and_payments/) | Head of Risk, VP Operations, Fraud Manager | Stripe, Adyen, Shopify, Braintree |
+| [`/marketplace_and_platform`](./marketplace_and_platform/) | VP Trust & Safety, Head of Marketplace Ops | Platform transaction logs, seller systems, review data |
+| [`/subscription_and_billing`](./subscription_and_billing/) | Head of Growth, VP Finance, Revenue Ops | Billing systems, subscription platforms, usage logs |
 
 If you are unsure where to start, you are most likely in `/ecommerce_and_payments`.
 
@@ -31,7 +31,7 @@ Map your internal column names to the framework's normalized schema. This is the
 **Part 2 — The Detection Logic (Do not alter)**
 The Antigenic Analytics behavioral signal logic. It references only the mapped CTE from Part 1. Once your columns are mapped, this runs as-is.
 
-This architecture means a single 5-minute mapping exercise makes every query in the vertical plug-and-play against your schema. The universal mapping template is available at [`/shared_utilities/mapping_cte_master_template.sql`](/shared_utilities/mapping_cte_master_template.sql).
+This architecture means a single 5-minute mapping exercise makes every query in the vertical plug-and-play against your schema. The universal mapping template is available at [`/shared_utilities/mapping_cte_master_template.sql`](./shared_utilities/mapping_cte_master_template.sql).
 
 ---
 
@@ -150,14 +150,14 @@ Open any `.sql` file. Edit the Mapping CTE at the top. Run against your warehous
 
 | File | Purpose |
 | --- | --- |
-| [`/shared_utilities/mapping_cte_master_template.sql`](/shared_utilities/mapping_cte_master_template.sql) | Universal schema mapping template for any vertical |
-| [`/shared_utilities/signal_stacking_master.sql`](/shared_utilities/signal_stacking_master.sql) | Aggregate signal outputs into a composite risk score |
+| [`/shared_utilities/mapping_cte_master_template.sql`](./shared_utilities/mapping_cte_master_template.sql) | Universal schema mapping template for any vertical |
+| [`/shared_utilities/signal_stacking_master.sql`](./shared_utilities/signal_stacking_master.sql) | Aggregate signal outputs into a composite risk score |
 
 ---
 
 ## License
 
-Apache License 2.0 — See [`LICENSE`](/LICENSE)
+Apache License 2.0 — See [`LICENSE`](./LICENSE)
 
 You may use, modify, and deploy these queries commercially. Attribution appreciated but not required.
 
