@@ -1,992 +1,676 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
-  <script>document.documentElement.classList.replace("no-js","js")</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Antigenic Analytics</title>
-  <meta name="description" content="Open-source behavioral fraud detection. Find what your existing tools miss." />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antigenic Analytics — Behavioral Fraud Detection</title>
+<meta name="description" content="Your fraud tools are missing behavioral patterns. We find them. Antigenic Analytics delivers behavioral fraud signal audits — proven library plus custom detection — that catch what rules and ML miss.">
+<meta property="og:title"       content="Antigenic Analytics — Behavioral Fraud Detection">
+<meta property="og:description" content="Your fraud tools are missing behavioral patterns. We find them.">
+<meta property="og:url"         content="https://austinocampo.github.io/antigenic-analytics/">
+<meta property="og:type"        content="website">
+<meta name="twitter:card"       content="summary_large_image">
 
-  <!-- Open Graph -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://austinocampo.github.io/antigenic-analytics/" />
-  <meta property="og:title"       content="Antigenic Analytics — Behavioral Fraud Detection Framework" />
-  <meta property="og:description" content="43 open-source SQL signals across 4 fraud verticals. Find what your existing tools miss. Free to deploy under Apache 2.0." />
-  <meta property="og:site_name"   content="Antigenic Analytics" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Twitter / X Card -->
-  <meta name="twitter:card"        content="summary" />
-  <meta name="twitter:title"       content="Antigenic Analytics — Behavioral Fraud Detection Framework" />
-  <meta name="twitter:description" content="43 open-source SQL signals across 4 fraud verticals. Find what your existing tools miss. Free to deploy under Apache 2.0." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<style>
+  /* ══════════════════════════════════════════════
+     TERMINAL PALETTE
+     Derived from SQL syntax highlighting:
+     ── Keywords:  amber   #D97706
+     ── Functions: blue    #90CDF4
+     ── Strings:   green   #9AE6B4
+     ── Comments:  gray    #4A5568
+     ══════════════════════════════════════════════ */
 
-    :root {
-      --bg:       #ffffff;
-      --fg:       #0a0a0a;
-      --acc:      #B45309;
-      --acc-dim:  rgba(180,83,9,0.09);
-      --acc-glow: rgba(180,83,9,0.22);
-      --z50:      #fafafa;
-      --z100:     #f5f5f5;
-      --z200:     #e5e5e5;
-      --z400:     #a3a3a3;
-      --z600:     #525252;
-      --z800:     #1a1a1a;
-      --f:        'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      --ease:     cubic-bezier(0.16, 1, 0.3, 1);
-    }
+  :root {
+    --bg:         #0B0E11;
+    --bg2:        #0F1318;
+    --surface:    #141920;
+    --surface2:   #1A2029;
+    --border:     #1E2733;
+    --border-l:   #283344;
 
-    html { scroll-behavior: smooth; }
+    --comment:    #4A5568;
+    --muted:      #5A6A7A;
+    --dim:        #8899AA;
+    --fg:         #C8D4E0;
+    --white:      #EDF2F7;
 
-    body {
-      background: var(--bg);
-      color: var(--fg);
-      font-family: var(--f);
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+    --kw:         #D97706;
+    --kw-dim:     rgba(217,119,6,0.10);
+    --kw-glow:    rgba(217,119,6,0.20);
+    --fn:         #90CDF4;
+    --fn-dim:     rgba(144,205,244,0.08);
+    --fn-glow:    rgba(144,205,244,0.15);
+    --st:         #9AE6B4;
+    --st-dim:     rgba(154,230,180,0.08);
+    --st-glow:    rgba(154,230,180,0.15);
+    --cm:         #4A5568;
 
-    /* ─────────────────────────────────────────
-       LAYOUT
-    ───────────────────────────────────────── */
-    .w { max-width: 980px; margin: 0 auto; padding: 0 40px; }
-    .w-narrow { max-width: 680px; margin: 0 auto; padding: 0 40px; }
+    --f:          'Plus Jakarta Sans', -apple-system, sans-serif;
+    --f-display:  'Poppins', sans-serif;
+    --f-mono:     'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    --ease:       cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-    /* ─────────────────────────────────────────
-       NAV
-    ───────────────────────────────────────── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
-      transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
-      border-bottom: 1px solid transparent;
-    }
-    nav.on {
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border-color: var(--z200);
-    }
-    .nav-w {
-      max-width: 980px; margin: 0 auto; padding: 0 40px;
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo {
-      font-size: 13.5px; font-weight: 700; letter-spacing: -0.04em;
-      color: var(--fg); text-decoration: none;
-    }
-    .logo b { color: var(--acc); font-weight: 700; }
-    .nav-r { display: flex; align-items: center; gap: 28px; }
-    .nav-r a {
-      font-size: 13px; font-weight: 500; color: var(--z600);
-      text-decoration: none; transition: color 0.15s; letter-spacing: -0.01em;
-    }
-    .nav-r a:hover { color: var(--fg); }
-    .nav-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--fg); color: #fff !important;
-      font-size: 12.5px; font-weight: 600; padding: 7px 16px;
-      border-radius: 980px; transition: background 0.15s, transform 0.15s;
-      letter-spacing: -0.01em;
-    }
-    .nav-btn:hover { background: var(--acc) !important; transform: translateY(-1px); }
-    .gh { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
-    /* ─────────────────────────────────────────
-       HERO
-    ───────────────────────────────────────── */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 120px 40px 80px;
-      position: relative; overflow: hidden;
-    }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--f);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    /* Radial glow — very Apple */
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -10%; left: 50%; transform: translateX(-50%);
-      width: 900px; height: 600px;
-      background: radial-gradient(ellipse at center,
-        rgba(180,83,9,0.06) 0%,
-        rgba(180,83,9,0.03) 40%,
-        transparent 70%
-      );
-      pointer-events: none;
-    }
+  ::selection { background: var(--kw-glow); color: var(--white); }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-l); border-radius: 2px; }
 
-    .hero-label {
-      display: inline-flex; align-items: center; gap: 7px;
-      font-size: 11.5px; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--acc);
-      margin-bottom: 36px;
-      opacity: 0; animation: up 0.7s var(--ease) 0.1s forwards;
-    }
-    .hero-label::before {
-      content: '';
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--acc);
-    }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
 
-    .hero h1 {
-      font-size: clamp(52px, 9vw, 88px);
-      font-weight: 800;
-      letter-spacing: -0.05em;
-      line-height: 1.02;
-      color: var(--fg);
-      margin-bottom: 28px;
-      max-width: 880px;
-      opacity: 0; animation: up 0.8s var(--ease) 0.2s forwards;
-    }
-    .hero h1 span { color: var(--z400); }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(rgba(144,205,244,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(144,205,244,0.015) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
 
-    .hero-p {
-      font-size: 18px; font-weight: 400; line-height: 1.7;
-      color: var(--z600); max-width: 480px; margin: 0 auto 44px;
-      opacity: 0; animation: up 0.8s var(--ease) 0.32s forwards;
-    }
-    .hero-p strong { color: var(--fg); font-weight: 600; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--kw);
+    margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--kw);
+    box-shadow: 0 0 8px var(--kw-glow);
+  }
 
-    .hero-cta {
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px; flex-wrap: wrap;
-      opacity: 0; animation: up 0.8s var(--ease) 0.44s forwards;
-    }
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 0;
+    background: rgba(11,14,17,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    max-width: 1080px; margin: 0 auto; padding: 0 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    font-family: var(--f-mono); font-size: 15px; font-weight: 700;
+    color: var(--white); text-decoration: none; letter-spacing: -0.01em;
+  }
+  .nav-brand span { color: var(--kw); }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    font-family: var(--f-mono); font-size: 12px; font-weight: 500;
+    color: var(--muted); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--fn); }
+  .nav-cta {
+    color: var(--bg) !important; background: var(--kw);
+    padding: 8px 20px; border-radius: 6px;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: #F59E0B !important; transform: translateY(-1px); }
 
-    .btn-solid {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--fg); color: #fff;
-      font-family: var(--f); font-size: 13.5px; font-weight: 600;
-      padding: 11px 22px; border-radius: 980px;
-      text-decoration: none; letter-spacing: -0.02em;
-      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-solid:hover {
-      background: var(--acc); transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(180,83,9,0.28);
-    }
+  .hero { padding: 180px 0 120px; position: relative; }
+  .hero::before {
+    content: ''; position: absolute; top: -100px; left: 50%;
+    transform: translateX(-50%); width: 900px; height: 700px;
+    background:
+      radial-gradient(ellipse at 30% 40%, var(--kw-glow) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, var(--fn-dim) 0%, transparent 50%);
+    opacity: 0.35; pointer-events: none; filter: blur(60px);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+  .hero h1 {
+    font-family: var(--f-mono);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--white);
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+  .hero h1 em { font-style: normal; color: var(--kw); }
+  .hero-sub {
+    font-size: 15px; line-height: 1.8; color: var(--dim);
+    max-width: 560px; margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
-    .btn-outline {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: transparent; color: var(--z600);
-      font-family: var(--f); font-size: 13.5px; font-weight: 500;
-      padding: 11px 22px; border-radius: 980px;
-      border: 1px solid var(--z200);
-      text-decoration: none; letter-spacing: -0.02em;
-      transition: border-color 0.15s, color 0.15s, transform 0.15s;
-    }
-    .btn-outline:hover {
-      border-color: var(--z400); color: var(--fg); transform: translateY(-1px);
-    }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; background: var(--kw); color: var(--bg);
+    font-family: var(--f-mono); font-size: 13px; font-weight: 600;
+    border: none; border-radius: 8px; text-decoration: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { background: #F59E0B; transform: translateY(-2px); box-shadow: 0 8px 30px var(--kw-glow); }
 
-    /* Stats strip */
-    .hero-stats {
-      display: flex; gap: 0; margin-top: 80px; width: 100%; max-width: 640px;
-      border: 1px solid var(--z200); border-radius: 16px; overflow: hidden;
-      opacity: 0; animation: up 0.8s var(--ease) 0.56s forwards;
-    }
-    .hstat {
-      flex: 1; padding: 22px 0; text-align: center;
-      border-right: 1px solid var(--z200);
-    }
-    .hstat:last-child { border-right: none; }
-    .hstat-n {
-      font-size: 26px; font-weight: 800; letter-spacing: -0.05em;
-      color: var(--fg); line-height: 1; margin-bottom: 4px;
-    }
-    .hstat-l {
-      font-size: 11px; font-weight: 500; color: var(--z400);
-      letter-spacing: 0.01em;
-    }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; background: transparent; color: var(--dim);
+    font-family: var(--f-mono); font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border-l); border-radius: 8px;
+    text-decoration: none; cursor: pointer; transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--fn); border-color: rgba(144,205,244,0.25); }
 
-    /* ─────────────────────────────────────────
-       SHARED SECTION STYLES
-    ───────────────────────────────────────── */
-    .s { padding: 128px 0; }
-    .s + .s { padding-top: 0; }
-    .divider { border: none; border-top: 1px solid var(--z200); }
+  .proof-bar { padding: 0 0 100px; position: relative; z-index: 1; }
+  .proof-bar-label {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 500;
+    color: var(--comment); letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .proof-bar-label::before { content: '// '; color: var(--comment); }
+  .proof-bar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
-    .eyebrow {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--acc); margin-bottom: 18px;
-    }
-    .sh {
-      font-size: clamp(32px, 5vw, 48px); font-weight: 800;
-      letter-spacing: -0.04em; line-height: 1.1; color: var(--fg);
-      margin-bottom: 18px;
-    }
-    .sp {
-      font-size: 17px; line-height: 1.75; color: var(--z600);
-    }
-    .sp strong { color: var(--fg); font-weight: 600; }
+  .proof-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px; transition: border-color 0.3s;
+  }
+  .proof-card:hover { border-color: var(--border-l); }
+  .proof-stat {
+    font-family: var(--f-mono); font-size: 32px; font-weight: 700;
+    color: var(--fn); margin-bottom: 10px;
+  }
+  .proof-industry { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
+  .proof-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-    /* ─────────────────────────────────────────
-       PROBLEM SECTION
-    ───────────────────────────────────────── */
-    .prob-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr);
-      gap: 1px; background: var(--z200);
-      border: 1px solid var(--z200); border-radius: 20px;
-      overflow: hidden; margin-top: 64px;
-    }
-    .prob-cell {
-      background: var(--bg); padding: 36px 32px;
-      transition: background 0.2s;
-    }
-    .prob-cell:hover { background: var(--z50); }
-    .prob-cell.dark { background: var(--z800); }
-    .prob-cell.dark:hover { background: #111; }
-    .prob-num {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--z400); margin-bottom: 16px;
-    }
-    .prob-cell.dark .prob-num { color: #555; }
-    .prob-title {
-      font-size: 15px; font-weight: 700; letter-spacing: -0.025em;
-      color: var(--fg); margin-bottom: 10px;
-    }
-    .prob-cell.dark .prob-title { color: #fff; }
-    .prob-body { font-size: 13.5px; line-height: 1.65; color: var(--z600); }
-    .prob-cell.dark .prob-body { color: #666; }
+  section { padding: 100px 0; position: relative; z-index: 1; }
+  .section-border { border-top: 1px solid var(--border); }
+  .section-head { margin-bottom: 60px; max-width: 600px; }
+  .section-head h2 {
+    font-family: var(--f-display); font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700; color: var(--white); letter-spacing: -0.02em;
+    margin-bottom: 16px; line-height: 1.2;
+  }
+  .section-head p { font-size: 16px; color: var(--dim); line-height: 1.7; }
 
-    /* ─────────────────────────────────────────
-       FRAMEWORK
-    ───────────────────────────────────────── */
-    .fw-header {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: end; margin-bottom: 56px;
-    }
-    .vgrid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-    }
-    .vcard {
-      border: 1px solid var(--z200); border-radius: 14px;
-      padding: 22px; transition: border-color 0.2s, transform 0.2s;
-    }
-    .vcard:hover { border-color: var(--acc); transform: translateY(-2px); }
-    .vcard-top {
-      display: flex; align-items: center;
-      justify-content: space-between; margin-bottom: 10px;
-    }
-    .vcard-name { font-size: 13.5px; font-weight: 700; letter-spacing: -0.025em; }
-    .vpill {
-      font-size: 10.5px; font-weight: 700; color: var(--acc);
-      background: var(--acc-dim); padding: 2px 9px; border-radius: 980px;
-    }
-    .vcard-desc { font-size: 12px; line-height: 1.6; color: var(--z400); }
+  .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .problem-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 32px 28px; transition: border-color 0.3s;
+  }
+  .problem-card:hover { border-color: var(--border-l); }
+  .problem-icon {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 600;
+    display: inline-block; padding: 6px 12px; border-radius: 6px;
+    margin-bottom: 20px; letter-spacing: 0.06em;
+  }
+  .problem-icon.icon-kw { color: var(--kw); background: var(--kw-dim); }
+  .problem-icon.icon-fn { color: var(--fn); background: var(--fn-dim); }
+  .problem-icon.icon-st { color: var(--st); background: var(--st-dim); }
+  .problem-card h3 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+  .problem-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
-    .fw-cta { display: flex; align-items: center; gap: 16px; margin-top: 40px; }
-    .fw-note { font-size: 12.5px; color: var(--z400); letter-spacing: -0.01em; }
+  .audit-section { background: var(--bg2); }
+  .audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .audit-detail h3 { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
+  .audit-detail p { font-size: 15px; color: var(--dim); line-height: 1.7; margin-bottom: 24px; }
+  .audit-includes { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .audit-includes li {
+    font-size: 14px; color: var(--fg); padding-left: 28px;
+    position: relative; line-height: 1.5;
+  }
+  .audit-includes li::before {
+    content: '→'; position: absolute; left: 0;
+    font-family: var(--f-mono); color: var(--kw); font-weight: 700;
+  }
 
-    /* ─────────────────────────────────────────
-       STAGES
-    ───────────────────────────────────────── */
-    .stage-list { margin-top: 64px; }
-    .stage {
-      display: grid; grid-template-columns: 56px 1fr;
-      gap: 20px; padding: 36px 0;
-      border-bottom: 1px solid var(--z200); align-items: start;
-    }
-    .stage:first-child { border-top: 1px solid var(--z200); }
-    .stage-n {
-      font-size: 12px; font-weight: 800; color: var(--z200);
-      letter-spacing: -0.02em; padding-top: 5px; font-variant-numeric: tabular-nums;
-    }
-    .stage-tag {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.09em;
-      text-transform: uppercase; color: var(--acc); margin-bottom: 10px;
-    }
-    .stage-title {
-      font-size: 19px; font-weight: 700; letter-spacing: -0.03em;
-      color: var(--fg); margin-bottom: 10px; line-height: 1.25;
-    }
-    .stage-text { font-size: 14.5px; line-height: 1.75; color: var(--z600); }
+  .audit-specs {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 32px;
+  }
+  .audit-spec-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 14px 0; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
+  }
+  .audit-spec-row:last-child { border-bottom: none; }
+  .audit-spec-label {
+    font-family: var(--f-mono); font-size: 11px; color: var(--comment);
+    font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .audit-spec-value { font-size: 14px; color: var(--white); font-weight: 600; text-align: right; }
+  .audit-spec-value.price { color: var(--st); font-family: var(--f-mono); font-size: 16px; }
 
-    /* ─────────────────────────────────────────
-       ABOUT
-    ───────────────────────────────────────── */
-    .about-wrap { background: var(--z50); border-radius: 24px; padding: 72px; }
-    .about-grid {
-      display: grid; grid-template-columns: 240px 1fr;
-      gap: 72px; align-items: start;
-    }
-    .about-name {
-      font-size: 26px; font-weight: 800; letter-spacing: -0.04em;
-      color: var(--fg); line-height: 1.1; margin-bottom: 4px;
-    }
-    .about-role { font-size: 12px; font-weight: 600; color: var(--acc); margin-bottom: 24px; letter-spacing: 0.01em; }
-    .creds { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .creds li {
-      display: flex; align-items: baseline; gap: 9px;
-      font-size: 12.5px; color: var(--z600); line-height: 1.5;
-    }
-    .creds li::before {
-      content: ''; display: block;
-      width: 3px; height: 3px; border-radius: 50%;
-      background: var(--z400); flex-shrink: 0; margin-top: 7px;
-    }
-    .about-text p {
-      font-size: 15.5px; line-height: 1.8; color: var(--z600); margin-bottom: 20px;
-    }
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-text strong { color: var(--fg); font-weight: 600; }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 20px; counter-reset: step;
+  }
+  .step-card {
+    counter-increment: step; position: relative; padding: 32px 24px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; transition: border-color 0.3s;
+  }
+  .step-card:hover { border-color: var(--border-l); }
+  .step-card::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--f-mono); font-size: 36px; font-weight: 700;
+    color: var(--fn); opacity: 0.25; line-height: 1; display: block; margin-bottom: 20px;
+  }
+  .step-card h3 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+  .step-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* ─────────────────────────────────────────
-       FOOTER
-    ───────────────────────────────────────── */
-    footer { padding: 48px 0; border-top: 1px solid var(--z200); }
-    .foot-row {
-      display: flex; align-items: center;
-      justify-content: space-between; margin-bottom: 16px;
-    }
-    .foot-logo {
-      font-size: 13.5px; font-weight: 700; letter-spacing: -0.04em;
-      color: var(--fg); text-decoration: none;
-    }
-    .foot-logo b { color: var(--acc); }
-    .foot-links { display: flex; gap: 24px; }
-    .foot-links a {
-      font-size: 12.5px; color: var(--z400); text-decoration: none; transition: color 0.15s;
-    }
-    .foot-links a:hover { color: var(--fg); }
-    .foot-copy { font-size: 11.5px; color: var(--z400); }
+  .glassbox { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .glassbox-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  .glassbox-text h2 {
+    font-family: var(--f-display); font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700; color: var(--white); letter-spacing: -0.02em;
+    margin-bottom: 16px; line-height: 1.2;
+  }
+  .glassbox-text p { font-size: 16px; color: var(--dim); line-height: 1.7; margin-bottom: 16px; }
 
-    /* ─────────────────────────────────────────
-       REVEAL ANIMATION
-    ───────────────────────────────────────── */
-    @keyframes up {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .js .r {
-      opacity: 0; transform: translateY(18px);
-      transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
-    }
-    .js .r.i { opacity: 1; transform: none; }
-    .js .r.t1 { transition-delay: 0.08s; }
-    .js .r.t2 { transition-delay: 0.16s; }
-    .js .r.t3 { transition-delay: 0.24s; }
-    .js .r.t4 { transition-delay: 0.32s; }
+  .glassbox-code {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 24px 28px; font-family: var(--f-mono); font-size: 12.5px;
+    line-height: 1.85; color: var(--dim); overflow-x: auto; position: relative;
+  }
+  .glassbox-code::before {
+    content: 'signal_07.sql'; position: absolute; top: 0; left: 0; right: 0;
+    padding: 8px 28px; font-family: var(--f-mono); font-size: 10px; font-weight: 500;
+    color: var(--comment); background: var(--surface);
+    border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0;
+    letter-spacing: 0.03em;
+  }
+  .glassbox-code .code-body { padding-top: 28px; }
+  .glassbox-code .kw { color: var(--kw); }
+  .glassbox-code .cm { color: var(--cm); font-style: italic; }
+  .glassbox-code .fn { color: var(--fn); }
+  .glassbox-code .st { color: var(--st); }
 
-    /* ─────────────────────────────────────────
-       RESPONSIVE
-    ───────────────────────────────────────── */
-    /* ── CTA SECTION ── */
+  .coverage-tags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .coverage-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 20px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--fg);
+    transition: border-color 0.3s;
+  }
+  .coverage-tag:hover { border-color: var(--border-l); }
+  .coverage-tag .count {
+    font-family: var(--f-mono); font-size: 12px; font-weight: 700;
+    color: var(--st); background: var(--st-dim); padding: 2px 8px; border-radius: 4px;
+  }
 
-    /* ── CTA SECTION ── */
-    .cta-section {
-      background: var(--fg);
-      padding: 128px 0;
-    }
-    .cta-inner {
-      text-align: center;
-    }
-    .cta-eyebrow {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--acc);
-      margin-bottom: 20px;
-    }
-    .cta-h {
-      font-size: clamp(40px, 6vw, 64px);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.04;
-      color: #fff;
-      margin-bottom: 20px;
-    }
-    .cta-sub {
-      font-size: 17px;
-      line-height: 1.65;
-      color: #71717a;
-      max-width: 560px;
-      margin: 0 auto 48px;
-    }
-    .cta-sub strong { color: #a1a1aa; }
-    .cta-btns {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-    .btn-amber {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--acc);
-      color: #fff;
-      font-family: var(--f);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 14px 28px;
-      border-radius: 980px;
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-amber:hover {
-      opacity: 0.88;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(180,83,9,0.4);
-    }
-    .btn-dark-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: transparent;
-      color: #a1a1aa;
-      font-family: var(--f);
-      font-size: 14px;
-      font-weight: 600;
-      padding: 14px 28px;
-      border-radius: 980px;
-      border: 1px solid #27272a;
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      transition: border-color 0.15s, color 0.15s;
-    }
-    .btn-dark-outline:hover {
-      border-color: #52525b;
-      color: #e4e4e7;
-    }
-    .btn-dark-outline .gh {
-      width: 16px; height: 16px;
-      fill: currentColor;
-    }
-    .cta-note {
-      font-size: 13px;
-      color: #3f3f46;
-      margin-top: 8px;
-    }
+  .founder-section { background: var(--bg2); }
+  .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .founder-quote {
+    font-size: 20px; font-weight: 500; color: var(--fg); line-height: 1.6;
+    font-style: italic; margin-bottom: 24px; position: relative;
+    padding-left: 24px; border-left: 3px solid var(--kw);
+  }
+  .founder-name { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .founder-title-text { font-family: var(--f-mono); font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .founder-creds { display: flex; flex-direction: column; gap: 12px; }
+  .founder-cred { font-size: 13px; color: var(--dim); padding-left: 24px; position: relative; line-height: 1.5; }
+  .founder-cred::before {
+    content: '—'; position: absolute; left: 0;
+    font-family: var(--f-mono); color: var(--fn);
+  }
 
-    /* ── CTA CARDS ── */
-    .cta-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: #1f1f1f;
-      border: 1px solid #1f1f1f;
-      border-radius: 16px;
-      overflow: hidden;
-      margin: 0 auto 44px;
-      max-width: 780px;
-      text-align: left;
-    }
-    .cta-card {
-      background: #111111;
-      padding: 28px 24px;
-      transition: background 0.2s;
-    }
-    .cta-card:hover { background: #161616; }
-    .cta-card-icon {
-      font-size: 7px;
-      color: var(--acc);
-      margin-bottom: 14px;
-      display: block;
-      letter-spacing: 0;
-    }
-    .cta-card-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #e5e7eb;
-      margin-bottom: 8px;
-    }
-    .cta-card-body {
-      font-size: 12.5px;
-      line-height: 1.65;
-      color: #52525b;
-    }
+  .cta-section {
+    padding: 120px 0; text-align: center;
+    border-top: 1px solid var(--border); position: relative; z-index: 1;
+  }
+  .cta-section::before {
+    content: ''; position: absolute; bottom: 0; left: 50%;
+    transform: translateX(-50%); width: 600px; height: 400px;
+    background: radial-gradient(ellipse, var(--kw-glow) 0%, transparent 70%);
+    opacity: 0.2; pointer-events: none; filter: blur(60px);
+  }
+  .cta-section h2 {
+    font-family: var(--f-display); font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800; color: var(--white); letter-spacing: -0.03em;
+    margin-bottom: 16px; position: relative;
+  }
+  .cta-section p {
+    font-size: 16px; color: var(--muted); max-width: 480px;
+    margin: 0 auto 40px; line-height: 1.7; position: relative;
+  }
+  .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; }
 
-    /* ── CTA SECTION ── */
-    /* ── CTA CARDS ── */
-    .cta-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: #222;
-      border: 1px solid #222;
-      border-radius: 16px;
-      overflow: hidden;
-      margin: 0 auto 44px;
-      max-width: 760px;
-      text-align: left;
-    }
-    .cta-card { background: #111; padding: 28px 22px; transition: background 0.2s; }
-    .cta-card:hover { background: #181818; }
-    .cta-card-icon { font-size: 7px; color: var(--acc); margin-bottom: 14px; display: block; }
-    .cta-card-title { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; color: #e5e7eb; margin-bottom: 8px; }
-    .cta-card-body { font-size: 12.5px; line-height: 1.65; color: #555; }
-    /* ── LET'S TALK BUTTON VARIANTS ── */
-    .nav-talk {
-      background: var(--acc) !important;
-    }
-    .nav-talk:hover {
-      background: #92400e !important;
-    }
-    .together-cta {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-top: 48px;
-      padding-top: 40px;
-      border-top: 1px solid var(--z200);
-      flex-wrap: wrap;
-    }
-    .btn-talk {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--acc);
-      color: #fff;
-      font-family: var(--f);
-      font-size: 14px;
-      font-weight: 700;
-      padding: 13px 28px;
-      border-radius: 980px;
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-talk:hover {
-      opacity: 0.88;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(180,83,9,0.35);
-    }
-    .together-note {
-      font-size: 13px;
-      color: var(--z400);
-      font-style: italic;
-    }
-    .foot-talk {
-      font-weight: 700 !important;
-      color: var(--acc) !important;
-    }
-    .foot-talk:hover {
-      color: #92400e !important;
-    }
+  footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; position: relative; z-index: 1; }
+  footer p { font-size: 12px; color: var(--comment); }
+  footer a { font-family: var(--f-mono); font-size: 11px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--fn); }
 
-    /* ═══════════════════════════════════════════
-       RESPONSIVE — ALL BREAKPOINTS
-       320px  Small Android
-       375px  iPhone SE / older iPhones
-       390px  iPhone 14/15
-       430px  iPhone 14/15 Plus
-       768px  iPad portrait
-       1024px iPad landscape / small laptop
-       1280px Standard laptop
-       1440px+ Large desktop
-    ═══════════════════════════════════════════ */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── LARGE DESKTOP (1440px+) ── */
-    @media (min-width: 1440px) {
-      .w { max-width: 1100px; }
-      .hero h1 { font-size: 96px; }
-      .hero::before { width: 1100px; height: 700px; }
-    }
-
-    /* ── TABLET LANDSCAPE / SMALL LAPTOP (900px–1100px) ── */
-    @media (max-width: 1100px) {
-      .fw-header { gap: 48px; }
-      .about-grid { grid-template-columns: 220px 1fr; gap: 48px; }
-      .about-wrap { padding: 56px 48px; }
-    }
-
-    /* ── TABLET PORTRAIT (768px–900px) ── */
-    @media (max-width: 900px) {
-      .hero h1 { font-size: clamp(44px, 8vw, 64px); }
-      .fw-header {
-        grid-template-columns: 1fr;
-        gap: 32px;
-        margin-bottom: 40px;
-      }
-      .vgrid { grid-template-columns: 1fr 1fr; }
-      .prob-grid { grid-template-columns: 1fr 1fr; }
-      .about-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .about-wrap { padding: 48px 40px; border-radius: 16px; }
-      .about-left { position: static; }
-      .cta-cards { grid-template-columns: 1fr; max-width: 480px; }
-      .stage { grid-template-columns: 44px 1fr; }
-      .together-cta { flex-direction: column; align-items: flex-start; gap: 14px; }
-    }
-
-    /* ── MOBILE (≤700px) ── */
-    @media (max-width: 700px) {
-      .w, .w-narrow { padding: 0 20px; }
-      .s { padding: 80px 0; }
-
-      /* Nav */
-      .nav-w { padding: 0 20px; }
-      .nav-r a:not(.nav-btn):not(.nav-talk) { display: none; }
-      .nav-btn, .nav-talk {
-        font-size: 11.5px;
-        padding: 6px 12px;
-      }
-
-      /* Hero */
-      .hero { padding: 96px 20px 60px; text-align: left; }
-      .hero::before { display: none; }
-      .hero-label { font-size: 10.5px; }
-      .hero h1 { font-size: clamp(38px, 10vw, 52px); margin-bottom: 20px; }
-      .hero-p { font-size: 16px; margin-bottom: 36px; }
-      .hero-cta { justify-content: flex-start; }
-      .hero-cta .btn-solid,
-      .hero-cta .btn-outline { font-size: 13px; padding: 10px 18px; }
-      .hero-stats {
-        flex-wrap: wrap;
-        margin-top: 48px;
-      }
-      .hstat {
-        min-width: 50%;
-        border-right: none;
-        border-bottom: 1px solid var(--z200);
-        padding: 18px 0;
-      }
-      .hstat:nth-child(odd) { border-right: 1px solid var(--z200); padding-left: 0; }
-      .hstat:nth-child(3),
-      .hstat:nth-child(4) { border-bottom: none; }
-      .hstat-n { font-size: 22px; }
-
-      /* Sections */
-      .sh { font-size: clamp(28px, 8vw, 38px); }
-      .sp { font-size: 15.5px; }
-      .eyebrow { font-size: 10.5px; }
-
-      /* Problem grid */
-      .prob-grid { grid-template-columns: 1fr; border-radius: 14px; }
-      .prob-cell { padding: 28px 24px; }
-
-      /* Framework */
-      .fw-header { grid-template-columns: 1fr; gap: 28px; margin-bottom: 32px; }
-      .vgrid { grid-template-columns: 1fr; gap: 8px; }
-      .vcard { padding: 20px; }
-      .fw-cta { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .fw-note { font-size: 12px; }
-
-      /* Stages */
-      .stage { grid-template-columns: 36px 1fr; gap: 14px; padding: 28px 0; }
-      .stage-n { font-size: 11px; }
-      .stage-title { font-size: 17px; }
-      .stage-text { font-size: 14px; }
-      .together-cta { flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 36px; padding-top: 32px; }
-
-      /* About */
-      .about-wrap { padding: 36px 24px; border-radius: 14px; }
-      .about-grid { grid-template-columns: 1fr; gap: 32px; }
-      .about-name { font-size: 24px; }
-      .about-text p { font-size: 15px; }
-
-      /* CTA */
-      .cta-section { padding: 80px 0; }
-      .cta-h { font-size: clamp(32px, 9vw, 48px); }
-      .cta-sub { font-size: 15px; }
-      .cta-cards { grid-template-columns: 1fr; max-width: 100%; border-radius: 12px; }
-      .cta-card { padding: 24px 20px; }
-      .cta-btns { flex-direction: column; align-items: stretch; }
-      .btn-amber, .btn-dark-outline { justify-content: center; padding: 13px 20px; }
-
-      /* Footer */
-      .foot-row { flex-direction: column; align-items: flex-start; gap: 16px; }
-      .foot-links { flex-wrap: wrap; gap: 16px; }
-    }
-
-    /* ── SMALL PHONE (≤390px) ── */
-    @media (max-width: 390px) {
-      .hero h1 { font-size: 36px; }
-      .nav-talk { display: none; }
-      .sh { font-size: 28px; }
-      .hstat { padding: 16px 0; }
-      .hstat-n { font-size: 20px; }
-      .btn-talk { font-size: 13px; padding: 11px 20px; }
-    }
-
-    /* ── VERY SMALL (≤360px) ── */
-    @media (max-width: 360px) {
-      .w, .w-narrow { padding: 0 16px; }
-      .hero h1 { font-size: 32px; }
-      .hero-p { font-size: 15px; }
-      .nav-btn { display: none; }
-    }
-
-  </style>
+  @media (max-width: 1024px) {
+    .audit-grid, .glassbox-inner, .founder-grid { grid-template-columns: 1fr; gap: 40px; }
+    .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    section { padding: 72px 0; }
+    .hero { padding: 140px 0 80px; }
+    .proof-bar-grid, .problem-grid, .steps-grid { grid-template-columns: 1fr; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .cta-section { padding: 80px 0; }
+    .audit-spec-value { text-align: left; font-size: 13px; }
+    .audit-spec-row { flex-direction: column; gap: 4px; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 1.5rem; }
+    .hero-actions { flex-direction: column; }
+    .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+  }
+</style>
 </head>
+
 <body>
 
-<!-- NAV -->
-<nav id="nav">
-  <div class="nav-w">
-    <a href="#" class="logo">antigenic<b>.analytics</b></a>
-    <div class="nav-r">
-      <a href="#framework">Framework</a>
-      <a href="#together">Work Together</a>
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">antigenic<span>.</span>analytics</a>
+    <div class="nav-links">
+      <a href="#problem">The Problem</a>
+      <a href="#audit">The Audit</a>
+      <a href="#how">How It Works</a>
       <a href="#about">About</a>
-      <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="nav-btn nav-talk">Let's Talk</a>
-      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="nav-btn">
-        <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-        GitHub
-      </a>
+      <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="nav-cta">Book a Call</a>
     </div>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-label">Open Source · Apache 2.0</div>
-  <h1>Find the fraud<br/><span>your tools missed.</span></h1>
-  <p class="hero-p">
-    Hi, I'm Austin. I spent years catching fraud at Fortune 50 companies — the behavioral patterns that slipped past every tool on the stack.
-    <strong>So I built an open-source SQL framework to catch what they can't.</strong>
-  </p>
-  <div class="hero-cta">
-    <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="btn-solid">
-      <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-      Explore the Framework
-    </a>
-    <a href="#framework" class="btn-outline">See what it detects ↓</a>
-  </div>
-  <div class="hero-stats">
-    <div class="hstat"><div class="hstat-n">43</div><div class="hstat-l">Signals</div></div>
-    <div class="hstat"><div class="hstat-n">4</div><div class="hstat-l">Verticals</div></div>
-    <div class="hstat"><div class="hstat-n">40K</div><div class="hstat-l">Demo rows</div></div>
-    <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Always</div></div>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- PROBLEM -->
-<section class="s" id="problem">
-  <div class="w">
-    <div class="w-narrow" style="padding: 0;">
-      <div class="eyebrow r">The Problem</div>
-      <h2 class="sh r t1">The fraud costing you the most<br/>is the kind built to evade you.</h2>
-      <p class="sp r t2">Sophisticated fraudsters don't trip your rules — they reverse-engineer them. They stay below thresholds, rotate patterns, and blend into normal behavior. <strong>Behavioral signals catch what rules and scores structurally can't.</strong></p>
-    </div>
-    <div class="prob-grid r t3">
-      <div class="prob-cell">
-        <div class="prob-num">01</div>
-        <div class="prob-title">Rule-based systems</div>
-        <div class="prob-body">Catch exactly what they were programmed for. Nothing more. Sophisticated fraud is engineered specifically to stay just below the thresholds you've set.</div>
-      </div>
-      <div class="prob-cell">
-        <div class="prob-num">02</div>
-        <div class="prob-title">ML black boxes</div>
-        <div class="prob-body">Return a score, not an explanation. When your VP of Risk asks why an account was flagged, "the model said so" isn't an answer you can act on or defend.</div>
-      </div>
-      <div class="prob-cell">
-        <div class="prob-num">03</div>
-        <div class="prob-title">Monthly fraud reviews</div>
-        <div class="prob-body">You pull last month's chargebacks, flag the obvious ones, and move on. Meanwhile, the operators running structured abuse against your platform designed their patterns to look clean on any single month. The signal only surfaces across 6–12 months of behavioral data.</div>
-      </div>
-      <div class="prob-cell dark">
-        <div class="prob-num">→</div>
-        <div class="prob-title">What's actually needed</div>
-        <div class="prob-body">Explainable behavioral signals, computed from your own data, with verdicts clear enough to walk into any executive meeting and defend line by line.</div>
+  <div class="container">
+    <div class="hero-content reveal">
+      <div class="eyebrow">Behavioral Fraud Detection</div>
+      <h1>Your fraud tools are missing <em>behavioral patterns.</em> We find them.</h1>
+      <p class="hero-sub">Rule-based systems catch known schemes. ML models return scores without explanations. Neither watches how fraud actually behaves over time. Antigenic Analytics does.</p>
+      <div class="hero-actions">
+        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-primary">Book a Strategy Call →</a>
+        <a href="#audit" class="btn-ghost">See How the Audit Works</a>
       </div>
     </div>
   </div>
 </section>
 
-<hr class="divider" />
-
-<!-- FRAMEWORK -->
-<section class="s" id="framework">
-  <div class="w">
-    <div class="fw-header">
-      <div>
-        <div class="eyebrow r">The Framework</div>
-        <h2 class="sh r t1" style="margin-bottom: 0;">43 signals.<br/>4 verticals.<br/>All open source.</h2>
+<div class="proof-bar">
+  <div class="container">
+    <div class="proof-bar-label reveal">Documented results from prior roles at Fortune 50 companies</div>
+    <div class="proof-bar-grid">
+      <div class="proof-card reveal">
+        <div class="proof-stat">$14M</div>
+        <div class="proof-industry">Aesthetics · Rewards Program</div>
+        <div class="proof-desc">Annualized fraud exposure identified through behavioral pattern analysis of loyalty redemptions.</div>
       </div>
-      <div>
-        <p class="sp r t1" style="font-size: 15.5px; margin-bottom: 16px;">
-          Edit one Mapping CTE to match your schema. The detection logic runs as-is. Pure SELECT statements — nothing writes to your database.
-        </p>
-        <p class="sp r t2" style="font-size: 15.5px;">
-          Every flag comes with a <strong>Glass Box verdict</strong> — the exact behavioral reason it fired. Not a score. An explanation you can stand behind.
-        </p>
+      <div class="proof-card reveal">
+        <div class="proof-stat">$7M</div>
+        <div class="proof-industry">Health Insurance · Claims Processing</div>
+        <div class="proof-desc">Coordinated provider fraud surfaced by longitudinal billing pattern signals across 24 months of data.</div>
       </div>
-    </div>
-
-    <div class="vgrid">
-      <div class="vcard r">
-        <div class="vcard-top"><div class="vcard-name">E-Commerce & Payments</div><div class="vpill">10 signals</div></div>
-        <div class="vcard-desc">Card testing, BIN attacks, refund abuse, velocity fraud, friendly fraud, triangulation, account takeover, synthetic transactions, chargeback farming.</div>
-      </div>
-      <div class="vcard r t1">
-        <div class="vcard-top"><div class="vcard-name">Loyalty, Rewards & Promotion</div><div class="vpill">13 signals</div></div>
-        <div class="vcard-desc">Point farming, referral rings, tier gaming, points laundering, bonus multiplier exploitation, promo code stacking, first-time discount farming, coupon network distribution.</div>
-      </div>
-      <div class="vcard r t2">
-        <div class="vcard-top"><div class="vcard-name">Marketplace & Platform</div><div class="vpill">10 signals</div></div>
-        <div class="vcard-desc">Seller collusion rings, fake listing velocity, commission manipulation, review fraud clustering, GMV inflation, buyer-seller coordination, fee avoidance schemes.</div>
-      </div>
-      <div class="vcard r t3">
-        <div class="vcard-top"><div class="vcard-name">Subscription & Billing</div><div class="vpill">10 signals</div></div>
-        <div class="vcard-desc">Trial abuse cycling, recurring dispute abuse, credential sharing, payment decay patterns, tier manipulation, renewal refund timing, churn-and-return cycling.</div>
+      <div class="proof-card reveal">
+        <div class="proof-stat">$5M</div>
+        <div class="proof-industry">Managed Care · Enrollment Fraud</div>
+        <div class="proof-desc">Fraudulent enrollment patterns detected through behavioral velocity analysis invisible to existing audits.</div>
       </div>
     </div>
+  </div>
+</div>
 
-    <div class="fw-cta r">
-      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="btn-solid">
-        <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-        Browse the Repo
-      </a>
-      <span class="fw-note">Includes 40,000 rows of synthetic demo data. Run it before connecting production.</span>
+<section id="problem" class="section-border">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">The Blind Spots</div>
+      <h2>Three gaps your current stack can't close</h2>
+      <p>Most fraud tools are built for speed — catching known schemes in real time. But behavioral fraud operates on a different timeline entirely.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <div class="problem-icon icon-kw">RULES</div>
+        <h3>Rules catch what you already know</h3>
+        <p>Your rules engine detects the patterns you've already coded for. It can't surface the schemes you haven't seen yet — and fraudsters adapt faster than rule libraries update.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-icon icon-fn">MODEL</div>
+        <h3>ML returns a score, not an answer</h3>
+        <p>When your Head of Risk asks why an account was flagged, "the model said so" isn't defensible. Black-box scores create investigation bottlenecks, not clarity.</p>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-icon icon-st">TIME</div>
+        <h3>Nobody's watching the slow game</h3>
+        <p>Behavioral fraud is patient — staying below thresholds, rotating identities, spacing transactions over months. Point-in-time checks will never catch a 12-month pattern.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="divider" />
-
-<!-- WORKING TOGETHER -->
-<section class="s" id="together">
-  <div class="w">
-    <div class="w-narrow" style="padding: 0;">
-      <div class="eyebrow r">Working Together</div>
-      <h2 class="sh r t1">Start with the repo.<br/>Go as deep as you need.</h2>
-      <p class="sp r t2">I designed this so you get real value without ever talking to me. But if you want to go further — or just want a faster path to real detections — there's a clear path. <strong style="color:var(--fg)">Stage 2 starts with a 30-minute call.</strong></p>
+<section id="audit" class="audit-section section-border">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">The Service</div>
+      <h2>The Fraud Signal Audit</h2>
+      <p>A fixed-scope engagement that quantifies the behavioral fraud exposure your current tools aren't catching — documented, explainable, and ready for your team.</p>
+      <p style="margin-top: 12px; font-family: var(--f-mono); font-size: 12px; color: var(--st);">Zero data extraction. All analysis runs in your environment. PII not required.</p>
     </div>
-    <div class="stage-list">
-      <div class="stage r">
-        <div class="stage-n">01</div>
-        <div>
-          <div class="stage-tag">Free · Self-serve</div>
-          <div class="stage-title">Clone the framework and run it yourself</div>
-          <div class="stage-text">Load the synthetic data, watch the signals fire, then map your own schema. Every threshold is documented, every signal has a behavioral rationale. Five minutes of mapping and you're running against production data.</div>
-        </div>
+    <div class="audit-grid">
+      <div class="audit-detail reveal">
+        <h3>What you get</h3>
+        <p>A comprehensive exposure report drawing from a proven library of 43+ behavioral signals — plus custom detection logic built for your specific environment. Every flagged pattern includes the underlying logic, the entities involved, and the estimated dollar impact.</p>
+        <ul class="audit-includes">
+          <li>Proven signals deployed from our library, tailored to your verticals</li>
+          <li>Custom signals built for fraud patterns specific to your business</li>
+          <li>Entity-level findings — specific accounts, vendors, or users flagged</li>
+          <li>Dollar exposure quantified per signal and per entity</li>
+          <li>Complete SQL logic for every finding (glass box — nothing hidden)</li>
+          <li>Executive summary for leadership with prioritized action items</li>
+          <li>Calibrated thresholds tuned to your transaction volume</li>
+        </ul>
       </div>
-      <div class="stage r t1">
-        <div class="stage-n">02</div>
-        <div>
-          <div class="stage-tag">Paid Engagement</div>
-          <div class="stage-title">Bring me in to tune it to your environment</div>
-          <div class="stage-text">I'll map the framework to your schema, calibrate thresholds to your transaction volume, run the full signal stack against your historical data, and quantify your actual exposure — documented and ready for your Head of Risk.</div>
+      <div class="audit-specs reveal">
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Format</span>
+          <span class="audit-spec-value">Fixed scope, one-time engagement</span>
         </div>
-      </div>
-      <div class="stage r t2">
-        <div class="stage-n">03</div>
-        <div>
-          <div class="stage-tag">Product Build</div>
-          <div class="stage-title">Turn it into an internal detection product</div>
-          <div class="stage-text">For teams that want ongoing detection, I can build a scheduled pipeline, a Snowflake native app, or a lightweight dashboard. Your analysts run investigations — the framework runs continuously in the background.</div>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Signals</span>
+          <span class="audit-spec-value">Proven library + custom-built</span>
         </div>
-      </div>
-    </div>
-
-    <div class="together-cta r t3">
-      <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-talk">
-        &#128197;&nbsp; Let&rsquo;s Talk
-      </a>
-      <span class="together-note">30 minutes. No pitch. Just your data and a plan.</span>
-    </div>
-
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- ABOUT -->
-<section class="s" id="about">
-  <div class="w">
-    <div class="about-wrap r">
-      <div class="about-grid">
-        <div>
-          <div class="about-name">Austin<br/>Ocampo</div>
-          <div class="about-role">Founder, Antigenic Analytics</div>
-          <ul class="creds">
-            <li>B.S. Econometrics & Psychology — UC Irvine</li>
-            <li>Sr. Fraud Analyst at 3 Fortune 50 companies</li>
-            <li>Specialist in behavioral signal detection</li>
-            <li>Based in Los Angeles, CA</li>
-          </ul>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Data access</span>
+          <span class="audit-spec-value">Flexible — your data never leaves</span>
         </div>
-        <div class="about-text">
-          <p>I've spent my career inside the fraud teams of some of the largest companies in the world. The problem I kept running into wasn't a lack of tools — it was that <strong>every tool was optimized for the fraud it had already seen.</strong></p>
-          <p>Antigenic Analytics is named after antigenic variation — the biological mechanism by which pathogens mutate their surface proteins to evade immune detection. Sophisticated fraudsters do the same: they study your detection systems and adapt specifically to stay below your thresholds.</p>
-          <p>My background in econometrics and psychology means every signal has a statistical foundation and a behavioral rationale — <strong>not just a threshold someone guessed at.</strong></p>
-          <p>I built this open source because the best proof is letting you run it yourself. No demo calls. No pitch decks. <strong>The repo is the pitch.</strong></p>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Platforms</span>
+          <span class="audit-spec-value">Snowflake, BigQuery, Redshift, Databricks</span>
+        </div>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Data depth</span>
+          <span class="audit-spec-value">12–24 months of transaction history</span>
+        </div>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Timeline</span>
+          <span class="audit-spec-value">2–3 weeks from data access</span>
+        </div>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Deliverable</span>
+          <span class="audit-spec-value">Exposure report + all SQL</span>
+        </div>
+        <div class="audit-spec-row">
+          <span class="audit-spec-label">Starting at</span>
+          <span class="audit-spec-value price">$15,000</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<section id="how" class="section-border">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">The Process</div>
+      <h2>Four steps. No ambiguity.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <h3>Strategy call</h3>
+        <p>30 minutes. You walk us through your environment, data stack, and fraud concerns. We identify which signals apply and what custom detection your business needs.</p>
+      </div>
+      <div class="step-card reveal">
+        <h3>Data access</h3>
+        <p>We work with your InfoSec requirements — sandboxed environment, client-side execution, or contractor onboarding. Your data never leaves your infrastructure.</p>
+      </div>
+      <div class="step-card reveal">
+        <h3>Signal analysis</h3>
+        <p>We deploy relevant signals from our library, build custom detection logic for your environment, calibrate thresholds, and document every finding.</p>
+      </div>
+      <div class="step-card reveal">
+        <h3>Exposure report</h3>
+        <p>You get a documented exposure report with entity-level findings, dollar impact, and every SQL query used — nothing hidden.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- CTA -->
+<section class="glassbox">
+  <div class="container">
+    <div class="glassbox-inner">
+      <div class="glassbox-text reveal">
+        <div class="eyebrow">The Approach</div>
+        <h2>Glass box, not black box</h2>
+        <p>Every signal is a SQL query you can read, audit, and run yourself. No proprietary scoring. No opaque models. When a pattern is flagged, you see exactly why — the logic, the data, the threshold.</p>
+        <p>This is behavioral forensics, not surveillance tooling. The framework is open source under Apache 2.0. The value of the audit is in the calibration, interpretation, and domain expertise applied to your specific environment.</p>
+        <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-family: var(--f-mono); font-size: 13px; color: var(--fn); text-decoration: none; transition: color 0.2s;">See the full signal library on GitHub →</a>
+      </div>
+      <div class="glassbox-code reveal">
+        <div class="code-body">
+          <span class="cm">-- Signal: Loyalty redemption velocity spike</span><br>
+          <span class="cm">-- Flags accounts with sudden bursts of</span><br>
+          <span class="cm">-- redemption activity vs. their baseline</span><br><br>
+          <span class="kw">WITH</span> baseline <span class="kw">AS</span> (<br>
+          &nbsp;&nbsp;<span class="kw">SELECT</span> account_id,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">AVG</span>(monthly_redemptions) <span class="kw">AS</span> avg_rate,<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">STDDEV</span>(monthly_redemptions) <span class="kw">AS</span> std_rate<br>
+          &nbsp;&nbsp;<span class="kw">FROM</span> redemption_monthly_agg<br>
+          &nbsp;&nbsp;<span class="kw">WHERE</span> period >= <span class="fn">DATEADD</span>(<span class="st">'month'</span>, -12, <span class="fn">CURRENT_DATE</span>)<br>
+          &nbsp;&nbsp;<span class="kw">GROUP BY</span> account_id<br>
+          )<br>
+          <span class="kw">SELECT</span> r.account_id,<br>
+          &nbsp;&nbsp;r.current_month_redemptions,<br>
+          &nbsp;&nbsp;b.avg_rate,<br>
+          &nbsp;&nbsp;<span class="fn">ROUND</span>((r.current_month_redemptions - b.avg_rate)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;/ <span class="fn">NULLIF</span>(b.std_rate, 0), 2) <span class="kw">AS</span> z_score<br>
+          <span class="kw">FROM</span> current_redemptions r<br>
+          <span class="kw">JOIN</span> baseline b <span class="kw">ON</span> r.account_id = b.account_id<br>
+          <span class="kw">WHERE</span> z_score > <span class="st">3.0</span>;
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-border">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Signal Coverage</div>
+      <h2>Where are your blind spots?</h2>
+      <p>43+ proven signals across four verticals — and we build more. The audit starts with our library and extends it with custom detection tailored to your fraud surface.</p>
+    </div>
+    <div class="coverage-tags reveal">
+      <div class="coverage-tag">Procurement & AP <span class="count">10</span></div>
+      <div class="coverage-tag">E-Commerce & Payments <span class="count">10</span></div>
+      <div class="coverage-tag">Loyalty, Rewards & Promos <span class="count">13</span></div>
+      <div class="coverage-tag">Marketplace & Platform <span class="count">10</span></div>
+    </div>
+    <div style="margin-top: 32px; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; display: inline-flex; align-items: center; gap: 16px; flex-wrap: wrap;" class="reveal">
+      <span style="font-size: 14px; color: var(--dim);">Every signal is public. The work speaks for itself.</span>
+      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" style="font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--fn); text-decoration: none; white-space: nowrap; transition: color 0.2s;">Explore on GitHub →</a>
+    </div>
+    <p style="margin-top: 12px; font-family: var(--f-mono); font-size: 11px; color: var(--comment);">Open source · Apache 2.0</p>
+  </div>
+</section>
+
+<section id="about" class="founder-section section-border">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="eyebrow">Who's Behind This</div>
+      <h2>Built by a fraud analyst, not a vendor</h2>
+    </div>
+    <div class="founder-grid">
+      <div class="reveal">
+        <div class="founder-quote">Fraud is a game of pattern recognition. The people running these schemes are disciplined — they stay below thresholds, rotate providers, and move slowly. You beat them by studying the patterns they don't know they're making.</div>
+      </div>
+      <div class="reveal">
+        <div class="founder-name">Austin Ocampo</div>
+        <div class="founder-title-text">Founder, Antigenic Analytics</div>
+        <div class="founder-creds">
+          <div class="founder-cred">B.S. Econometrics & Psychology, UC Irvine</div>
+          <div class="founder-cred">Senior analyst at multiple Fortune 50 companies</div>
+          <div class="founder-cred">$26M+ in documented fraud exposure across prior roles</div>
+          <div class="founder-cred">Built and deployed behavioral detection signals against real claims, enrollment, and loyalty data at scale</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="cta-section">
-  <div class="w">
-    <div class="cta-inner r">
-      <span class="cta-eyebrow">Book a Consultation</span>
-      <h2 class="cta-h">Let&rsquo;s find out what<br/>your data is hiding.</h2>
-      <p class="cta-sub">
-        A focused 30-minute call. We&rsquo;ll look at your environment,
-        identify which verticals carry the most risk, and
-        <strong>leave with a concrete plan for running the framework against your data.</strong>
-      </p>
-
-      <div class="cta-cards">
-        <div class="cta-card">
-          <div class="cta-card-icon">&#9679;</div>
-          <div class="cta-card-title">What we cover</div>
-          <div class="cta-card-body">Your fraud environment, current tooling gaps, which signals apply to your data, and what a tuned deployment looks like for your team.</div>
-        </div>
-        <div class="cta-card">
-          <div class="cta-card-icon">&#9679;</div>
-          <div class="cta-card-title">What you walk away with</div>
-          <div class="cta-card-body">A clear signal priority list, estimated exposure range in dollar terms, and a step-by-step plan to get the framework running in production.</div>
-        </div>
-        <div class="cta-card">
-          <div class="cta-card-icon">&#9679;</div>
-          <div class="cta-card-title">No obligation</div>
-          <div class="cta-card-body">The framework is free regardless. This call is for teams that want a faster path from repo to real detections &mdash; with someone who&rsquo;s done it before.</div>
-        </div>
+  <div class="container">
+    <div class="reveal">
+      <div class="eyebrow" style="justify-content: center;">Get Started</div>
+      <h2>Ready to see what you're missing?</h2>
+      <p>Book a 30-minute strategy call. No pitch deck. No pressure. Just an honest conversation about your fraud surface and whether a signal audit makes sense.</p>
+      <div class="cta-actions">
+        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-primary">Book a Strategy Call →</a>
+        <a href="mailto:austinocampo47@gmail.com" class="btn-ghost">Email Us Instead</a>
       </div>
-
-      <div class="cta-btns">
-        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-amber">
-          &#128197;&nbsp; Book a 30-Min Call
-        </a>
-        <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" class="btn-dark-outline">
-          <svg class="gh" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-          Explore the Repo First
-        </a>
-      </div>
-      <p class="cta-note">Prefer email? <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="76170305021f181915171b0619424136111b171f1a5815191b">[email&#160;protected]</a></p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="w">
-    <div class="foot-row">
-      <a href="#" class="foot-logo">antigenic<b>.analytics</b></a>
-      <div class="foot-links">
-        <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank">GitHub</a>
-        <a href="#framework">Framework</a>
-        <a href="#about">About</a>
-        <a href="/cdn-cgi/l/email-protection#57362224233e393834363a2738636017303a363e3b7934383a">Contact</a>
-        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="foot-talk">Let's Talk ↗</a>
-      </div>
-    </div>
-    <div class="foot-copy">Open source under Apache License 2.0 — free to use, modify, and deploy commercially.</div>
+  <div class="container">
+    <p style="margin-bottom: 8px;">
+      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank">GitHub</a> &nbsp;·&nbsp;
+      <a href="https://calendly.com/austinocampo47/30min" target="_blank">Calendly</a> &nbsp;·&nbsp;
+      <a href="mailto:austinocampo47@gmail.com">Contact</a>
+    </p>
+    <p>© 2026 Antigenic Analytics · Apache 2.0</p>
+    <p style="margin-top: 20px; font-family: var(--f-mono); font-size: 10px; color: #1E2733; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6;">* Why "antigenic"? In biology, antigenic variation is how pathogens constantly change their surface proteins to evade the immune system. Fraud works the same way — schemes mutate to slip past the defenses built to catch them. We study the mutation.</p>
   </div>
 </footer>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  const nav = document.getElementById('nav');
-  addEventListener('scroll', () => nav.classList.toggle('on', scrollY > 16), { passive: true });
-  const ro = new Intersection
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
