@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Antigenic Analytics — Behavioral Fraud Detection</title>
-<meta name="description" content="Your fraud tools are missing behavioral patterns. We find them. Antigenic Analytics delivers behavioral fraud signal audits — proven library plus custom detection — that catch what rules and ML miss.">
-<meta property="og:title"       content="Antigenic Analytics — Behavioral Fraud Detection">
-<meta property="og:description" content="Your fraud tools are missing behavioral patterns. We find them.">
+<title>Antigenic Analytics — Loyalty & Rewards Fraud Detection</title>
+<meta name="description" content="Your loyalty program was built to grow members. Nobody's watching for fraud inside it. We do.">
+<meta property="og:title"       content="Antigenic Analytics — Loyalty & Rewards Fraud Detection">
+<meta property="og:description" content="Your loyalty program was built to grow members. Nobody's watching for fraud inside it. We do.">
 <meta property="og:url"         content="https://austinocampo.github.io/antigenic-analytics/">
 <meta property="og:type"        content="website">
 <meta name="twitter:card"       content="summary_large_image">
@@ -16,40 +16,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  /* ══════════════════════════════════════════════
-     TERMINAL PALETTE
-     Derived from SQL syntax highlighting:
-     ── Keywords:  coral   #D97757
-     ── Functions: blue    #90CDF4
-     ── Strings:   green   #9AE6B4
-     ── Comments:  gray    #4A5568
-     ══════════════════════════════════════════════ */
-
   :root {
-    --bg:         #0B0E11;
-    --bg2:        #0F1318;
-    --surface:    #141920;
-    --surface2:   #1A2029;
-    --border:     #1E2733;
-    --border-l:   #283344;
-
-    --comment:    #4A5568;
-    --muted:      #5A6A7A;
-    --dim:        #8899AA;
+    --bg:         #1E2330;
+    --bg2:        #242A38;
+    --surface:    #2A3142;
+    --border:     #323B4E;
+    --border-l:   #3C475C;
+    --comment:    #6B7B8F;
+    --muted:      #7A8A9C;
+    --dim:        #9DAABB;
     --fg:         #C8D4E0;
     --white:      #EDF2F7;
-
     --kw:         #D97757;
     --kw-dim:     rgba(217,119,87,0.10);
     --kw-glow:    rgba(217,119,87,0.20);
     --fn:         #90CDF4;
     --fn-dim:     rgba(144,205,244,0.08);
-    --fn-glow:    rgba(144,205,244,0.15);
     --st:         #9AE6B4;
     --st-dim:     rgba(154,230,180,0.08);
-    --st-glow:    rgba(154,230,180,0.15);
-    --cm:         #4A5568;
-
     --f:          'Plus Jakarta Sans', -apple-system, sans-serif;
     --f-display:  'Poppins', sans-serif;
     --f-mono:     'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
@@ -58,63 +42,29 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-
   body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: var(--f);
-    font-size: 16px;
-    line-height: 1.7;
-    overflow-x: hidden;
+    background: var(--bg); color: var(--fg); font-family: var(--f);
+    font-size: 16px; line-height: 1.7; overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
-
   ::selection { background: var(--kw-glow); color: var(--white); }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border-l); border-radius: 2px; }
-
   .container { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
 
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background-image:
       linear-gradient(rgba(144,205,244,0.015) 1px, transparent 1px),
       linear-gradient(90deg, rgba(144,205,244,0.015) 1px, transparent 1px);
     background-size: 80px 80px;
   }
 
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--f-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--kw);
-    margin-bottom: 20px;
-  }
-  .eyebrow::before {
-    content: '';
-    display: block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--kw);
-    box-shadow: 0 0 8px var(--kw-glow);
-  }
-
+  /* ── Nav ── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 16px 0;
-    background: rgba(11,14,17,0.88);
-    backdrop-filter: blur(20px);
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 0;
+    background: rgba(30,35,48,0.90); backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
   }
   .nav-inner {
@@ -123,7 +73,7 @@
   }
   .nav-brand {
     font-family: var(--f-mono); font-size: 15px; font-weight: 700;
-    color: var(--white); text-decoration: none; letter-spacing: -0.01em;
+    color: var(--white); text-decoration: none;
   }
   .nav-brand span { color: var(--kw); }
   .nav-links { display: flex; align-items: center; gap: 32px; }
@@ -139,7 +89,8 @@
   }
   .nav-cta:hover { background: #E8937A !important; transform: translateY(-1px); }
 
-  .hero { padding: 180px 0 120px; position: relative; }
+  /* ── Hero ── */
+  .hero { padding: 180px 0 100px; position: relative; }
   .hero::before {
     content: ''; position: absolute; top: -100px; left: 50%;
     transform: translateX(-50%); width: 900px; height: 700px;
@@ -148,20 +99,25 @@
       radial-gradient(ellipse at 70% 60%, var(--fn-dim) 0%, transparent 50%);
     opacity: 0.35; pointer-events: none; filter: blur(60px);
   }
-  .hero-content { position: relative; z-index: 1; max-width: 720px; }
+  .hero-content { position: relative; z-index: 1; max-width: 680px; }
+  .hero-eyebrow {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--kw);
+    margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--kw); box-shadow: 0 0 8px var(--kw-glow);
+  }
   .hero h1 {
-    font-family: var(--f-mono);
-    font-size: clamp(2rem, 4.5vw, 3rem);
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--white);
-    letter-spacing: -0.03em;
-    margin-bottom: 24px;
+    font-family: var(--f-mono); font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700; line-height: 1.25; color: var(--white);
+    letter-spacing: -0.02em; margin-bottom: 24px;
   }
   .hero h1 em { font-style: normal; color: var(--kw); }
   .hero-sub {
-    font-size: 15px; line-height: 1.8; color: var(--dim);
-    max-width: 560px; margin-bottom: 40px;
+    font-size: 16px; line-height: 1.8; color: var(--dim);
+    max-width: 520px; margin-bottom: 40px;
   }
   .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
@@ -173,7 +129,6 @@
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
   }
   .btn-primary:hover { background: #E8937A; transform: translateY(-2px); box-shadow: 0 8px 30px var(--kw-glow); }
-
   .btn-ghost {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 14px 28px; background: transparent; color: var(--dim);
@@ -183,158 +138,84 @@
   }
   .btn-ghost:hover { color: var(--fn); border-color: rgba(144,205,244,0.25); }
 
-  .proof-bar { padding: 0 0 100px; position: relative; z-index: 1; }
-  .proof-bar-label {
-    font-family: var(--f-mono); font-size: 11px; font-weight: 500;
-    color: var(--comment); letter-spacing: 0.06em; text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-  .proof-bar-label::before { content: '// '; color: var(--comment); }
-  .proof-bar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-
-  .proof-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 28px; transition: border-color 0.3s;
-  }
-  .proof-card:hover { border-color: var(--border-l); }
-  .proof-stat {
-    font-family: var(--f-mono); font-size: 32px; font-weight: 700;
-    color: var(--fn); margin-bottom: 10px;
-  }
-  .proof-industry { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 6px; }
-  .proof-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
-
+  /* ── Sections ── */
   section { padding: 100px 0; position: relative; z-index: 1; }
   .section-border { border-top: 1px solid var(--border); }
-  .section-head { margin-bottom: 60px; max-width: 600px; }
-  .section-head h2 {
-    font-family: var(--f-display); font-size: clamp(1.75rem, 3vw, 2.25rem);
-    font-weight: 700; color: var(--white); letter-spacing: -0.02em;
-    margin-bottom: 16px; line-height: 1.2;
-  }
-  .section-head p { font-size: 16px; color: var(--dim); line-height: 1.7; }
 
-  .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .problem-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 32px 28px; transition: border-color 0.3s;
+  /* ── The Gap table ── */
+  .gap-table {
+    width: 100%; border-collapse: collapse; margin-top: 40px;
   }
-  .problem-card:hover { border-color: var(--border-l); }
-  .problem-icon {
-    font-family: var(--f-mono); font-size: 11px; font-weight: 600;
-    display: inline-block; padding: 6px 12px; border-radius: 6px;
-    margin-bottom: 20px; letter-spacing: 0.06em;
+  .gap-table th {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 600;
+    color: var(--comment); text-transform: uppercase; letter-spacing: 0.06em;
+    text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border);
   }
-  .problem-icon.icon-kw { color: var(--kw); background: var(--kw-dim); }
-  .problem-icon.icon-fn { color: var(--fn); background: var(--fn-dim); }
-  .problem-icon.icon-st { color: var(--st); background: var(--st-dim); }
-  .problem-card h3 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
-  .problem-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .gap-table td {
+    font-size: 14px; color: var(--fg); padding: 14px 16px;
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .gap-table td:first-child { font-weight: 600; color: var(--white); white-space: nowrap; }
+  .gap-table td:last-child { color: var(--muted); font-size: 13px; }
+  .gap-table tr:last-child td { border-bottom: none; }
+  .gap-table .gap-row td {
+    background: var(--kw-dim); color: var(--kw); font-weight: 600;
+  }
+  .gap-table .gap-row td:last-child { color: var(--kw); }
 
-  .audit-section { background: var(--bg2); }
-  .audit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
-  .audit-detail h3 { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
-  .audit-detail p { font-size: 15px; color: var(--dim); line-height: 1.7; margin-bottom: 24px; }
-  .audit-includes { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-  .audit-includes li {
-    font-size: 14px; color: var(--fg); padding-left: 28px;
-    position: relative; line-height: 1.5;
+  /* ── Proof stat ── */
+  .proof-section { background: var(--bg2); }
+  .proof-inner {
+    display: flex; align-items: center; gap: 48px;
   }
-  .audit-includes li::before {
+  .proof-number {
+    font-family: var(--f-mono); font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 700; color: var(--fn); line-height: 1; flex-shrink: 0;
+  }
+  .proof-text { max-width: 480px; }
+  .proof-text p { font-size: 15px; color: var(--dim); line-height: 1.7; }
+  .proof-text .proof-context {
+    font-family: var(--f-mono); font-size: 11px; color: var(--comment);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
+  }
+
+  /* ── What we do ── */
+  .what-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+  }
+  .what-grid h3 { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
+  .what-grid p { font-size: 15px; color: var(--dim); line-height: 1.7; margin-bottom: 16px; }
+  .what-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .what-list li {
+    font-size: 14px; color: var(--fg); padding-left: 24px; position: relative; line-height: 1.5;
+  }
+  .what-list li::before {
     content: '→'; position: absolute; left: 0;
     font-family: var(--f-mono); color: var(--kw); font-weight: 700;
   }
-
-  .audit-specs {
+  .what-specs {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 10px; padding: 32px;
   }
-  .audit-spec-row {
+  .what-spec-row {
     display: flex; justify-content: space-between; align-items: baseline;
-    padding: 14px 0; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
+    padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap;
   }
-  .audit-spec-row:last-child { border-bottom: none; }
-  .audit-spec-label {
+  .what-spec-row:last-child { border-bottom: none; }
+  .what-spec-label {
     font-family: var(--f-mono); font-size: 11px; color: var(--comment);
     font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em;
   }
-  .audit-spec-value { font-size: 14px; color: var(--white); font-weight: 600; text-align: right; }
-  .audit-spec-value.price { color: var(--st); font-family: var(--f-mono); font-size: 16px; }
+  .what-spec-value { font-size: 14px; color: var(--white); font-weight: 600; text-align: right; }
 
-  .steps-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 20px; counter-reset: step;
-  }
-  .step-card {
-    counter-increment: step; position: relative; padding: 32px 24px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; transition: border-color 0.3s;
-  }
-  .step-card:hover { border-color: var(--border-l); }
-  .step-card::before {
-    content: counter(step, decimal-leading-zero);
-    font-family: var(--f-mono); font-size: 36px; font-weight: 700;
-    color: var(--fn); opacity: 0.25; line-height: 1; display: block; margin-bottom: 20px;
-  }
-  .step-card h3 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
-  .step-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  /* ── About ── */
+  .about-section { background: var(--bg2); }
+  .about-inner { max-width: 600px; }
+  .about-name { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .about-title { font-family: var(--f-mono); font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .about-bio { font-size: 15px; color: var(--dim); line-height: 1.7; margin-bottom: 16px; }
 
-  .glassbox { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .glassbox-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-  .glassbox-text h2 {
-    font-family: var(--f-display); font-size: clamp(1.75rem, 3vw, 2.25rem);
-    font-weight: 700; color: var(--white); letter-spacing: -0.02em;
-    margin-bottom: 16px; line-height: 1.2;
-  }
-  .glassbox-text p { font-size: 16px; color: var(--dim); line-height: 1.7; margin-bottom: 16px; }
-
-  .glassbox-code {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-    padding: 24px 28px; font-family: var(--f-mono); font-size: 12.5px;
-    line-height: 1.85; color: var(--dim); overflow-x: auto; position: relative;
-  }
-  .glassbox-code::before {
-    content: 'signal_07.sql'; position: absolute; top: 0; left: 0; right: 0;
-    padding: 8px 28px; font-family: var(--f-mono); font-size: 10px; font-weight: 500;
-    color: var(--comment); background: var(--surface);
-    border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0;
-    letter-spacing: 0.03em;
-  }
-  .glassbox-code .code-body { padding-top: 28px; }
-  .glassbox-code .kw { color: var(--kw); }
-  .glassbox-code .cm { color: var(--cm); font-style: italic; }
-  .glassbox-code .fn { color: var(--fn); }
-  .glassbox-code .st { color: var(--st); }
-
-  .coverage-tags { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-  .coverage-tag {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 12px 20px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--fg);
-    transition: border-color 0.3s;
-  }
-  .coverage-tag:hover { border-color: var(--border-l); }
-  .coverage-tag .count {
-    font-family: var(--f-mono); font-size: 12px; font-weight: 700;
-    color: var(--st); background: var(--st-dim); padding: 2px 8px; border-radius: 4px;
-  }
-
-  .founder-section { background: var(--bg2); }
-  .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
-  .founder-quote {
-    font-size: 20px; font-weight: 500; color: var(--fg); line-height: 1.6;
-    font-style: italic; margin-bottom: 24px; position: relative;
-    padding-left: 24px; border-left: 3px solid var(--kw);
-  }
-  .founder-name { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
-  .founder-title-text { font-family: var(--f-mono); font-size: 13px; color: var(--muted); margin-bottom: 24px; }
-  .founder-creds { display: flex; flex-direction: column; gap: 12px; }
-  .founder-cred { font-size: 13px; color: var(--dim); padding-left: 24px; position: relative; line-height: 1.5; }
-  .founder-cred::before {
-    content: '—'; position: absolute; left: 0;
-    font-family: var(--f-mono); color: var(--fn);
-  }
-
+  /* ── CTA ── */
   .cta-section {
     padding: 120px 0; text-align: center;
     border-top: 1px solid var(--border); position: relative; z-index: 1;
@@ -346,16 +227,17 @@
     opacity: 0.2; pointer-events: none; filter: blur(60px);
   }
   .cta-section h2 {
-    font-family: var(--f-display); font-size: clamp(2rem, 4vw, 2.75rem);
-    font-weight: 800; color: var(--white); letter-spacing: -0.03em;
+    font-family: var(--f-display); font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 700; color: var(--white); letter-spacing: -0.02em;
     margin-bottom: 16px; position: relative;
   }
   .cta-section p {
-    font-size: 16px; color: var(--muted); max-width: 480px;
+    font-size: 16px; color: var(--muted); max-width: 440px;
     margin: 0 auto 40px; line-height: 1.7; position: relative;
   }
   .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; }
 
+  /* ── Footer ── */
   footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; position: relative; z-index: 1; }
   footer p { font-size: 12px; color: var(--comment); }
   footer a { font-family: var(--f-mono); font-size: 11px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
@@ -365,289 +247,207 @@
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 1024px) {
-    .audit-grid, .glassbox-inner, .founder-grid { grid-template-columns: 1fr; gap: 40px; }
-    .steps-grid { grid-template-columns: repeat(2, 1fr); }
+    .what-grid { grid-template-columns: 1fr; gap: 40px; }
+    .proof-inner { flex-direction: column; gap: 24px; }
   }
   @media (max-width: 768px) {
     .container { padding: 0 20px; }
     section { padding: 72px 0; }
     .hero { padding: 140px 0 80px; }
-    .proof-bar-grid, .problem-grid, .steps-grid { grid-template-columns: 1fr; }
     .nav-links a:not(.nav-cta) { display: none; }
     .cta-section { padding: 80px 0; }
-    .audit-spec-value { text-align: left; font-size: 13px; }
-    .audit-spec-row { flex-direction: column; gap: 4px; }
+    [style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
+    [style*="grid-template-columns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+    .gap-table { font-size: 13px; }
+    .gap-table td, .gap-table th { padding: 10px 10px; }
+    .what-spec-row { flex-direction: column; gap: 4px; }
+    .what-spec-value { text-align: left; }
   }
   @media (max-width: 480px) {
-    .hero h1 { font-size: 1.5rem; }
+    .hero h1 { font-size: 1.4rem; }
     .hero-actions { flex-direction: column; }
     .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    .gap-table td:last-child { display: none; }
   }
 </style>
 </head>
 
 <body>
 
+<!-- Nav -->
 <nav>
   <div class="nav-inner">
     <a href="#" class="nav-brand">antigenic<span>.</span>analytics</a>
     <div class="nav-links">
-      <a href="#problem">The Problem</a>
-      <a href="#audit">The Audit</a>
-      <a href="#how">How It Works</a>
+      <a href="#gap">The Gap</a>
+      <a href="#what">The Diagnostic</a>
       <a href="#about">About</a>
       <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="nav-cta">Book a Call</a>
     </div>
   </div>
 </nav>
 
+
+<!-- Hero -->
 <section class="hero">
   <div class="container">
     <div class="hero-content reveal">
-      <div class="eyebrow">Behavioral Fraud Detection</div>
-      <h1>Your fraud tools are missing <em>behavioral patterns.</em> We find them.</h1>
-      <p class="hero-sub">Rule-based systems catch known schemes. ML models return scores without explanations. Neither watches how fraud actually behaves over time. Antigenic Analytics does.</p>
+      <div class="hero-eyebrow">Loyalty & Rewards Fraud Detection</div>
+      <h1>Your <em style="color: var(--fn);">loyalty program</em> was built to <em style="color: var(--st);">grow members.</em> Not to catch <em>fraud.</em></h1>
+      <p class="hero-sub">We find the fraud hiding in your loyalty program. Marketing owns the program. Finance tracks the budget. Your data team runs reports. Nobody's looking at behavioral fraud patterns in your rewards data — that's where we come in.</p>
       <div class="hero-actions">
-        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-primary">Book a Strategy Call →</a>
-        <a href="#audit" class="btn-ghost">See How the Audit Works</a>
+        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-primary">Book a 30-Min Call →</a>
+        <a href="#gap" class="btn-ghost">See the Gap</a>
       </div>
     </div>
   </div>
 </section>
 
-<div class="proof-bar">
-  <div class="container">
-    <div class="proof-bar-label reveal">Documented results from prior roles at Fortune 50 companies</div>
-    <div class="proof-bar-grid">
-      <div class="proof-card reveal">
-        <div class="proof-stat">$14M</div>
-        <div class="proof-industry">Aesthetics · Rewards Program</div>
-        <div class="proof-desc">Annualized fraud exposure identified through behavioral pattern analysis of loyalty redemptions.</div>
-      </div>
-      <div class="proof-card reveal">
-        <div class="proof-stat">$7M</div>
-        <div class="proof-industry">Health Insurance · Claims Processing</div>
-        <div class="proof-desc">Coordinated provider fraud surfaced by longitudinal billing pattern signals across 24 months of data.</div>
-      </div>
-      <div class="proof-card reveal">
-        <div class="proof-stat">$5M</div>
-        <div class="proof-industry">Managed Care · Enrollment Fraud</div>
-        <div class="proof-desc">Fraudulent enrollment patterns detected through behavioral velocity analysis invisible to existing audits.</div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<section id="problem" class="section-border">
+<!-- The Gap -->
+<section id="gap" class="section-border">
   <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">The Blind Spots</div>
-      <h2>Three gaps your current stack can't close</h2>
-      <p>Most fraud tools are built for speed — catching known schemes in real time. But behavioral fraud operates on a different timeline entirely.</p>
+    <div style="max-width: 600px; margin-bottom: 48px;" class="reveal">
+      <h2 style="font-family: var(--f-display); font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 700; color: var(--white); letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2;">The blind spot in your rewards program</h2>
     </div>
-    <div class="problem-grid">
-      <div class="problem-card reveal">
-        <div class="problem-icon icon-kw">RULES</div>
-        <h3>Rules catch what you already know</h3>
-        <p>Your rules engine detects the patterns you've already coded for. It can't surface the schemes you haven't seen yet — and fraudsters adapt faster than rule libraries update.</p>
-      </div>
-      <div class="problem-card reveal">
-        <div class="problem-icon icon-fn">MODEL</div>
-        <h3>ML returns a score, not an answer</h3>
-        <p>When your Head of Risk asks why an account was flagged, "the model said so" isn't defensible. Black-box scores create investigation bottlenecks, not clarity.</p>
-      </div>
-      <div class="problem-card reveal">
-        <div class="problem-icon icon-st">TIME</div>
-        <h3>Nobody's watching the slow game</h3>
-        <p>Behavioral fraud is patient — staying below thresholds, rotating identities, spacing transactions over months. Point-in-time checks will never catch a 12-month pattern.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="audit" class="audit-section section-border">
-  <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">The Service</div>
-      <h2>The Fraud Signal Audit</h2>
-      <p>A fixed-scope engagement that quantifies the behavioral fraud exposure your current tools aren't catching — documented, explainable, and ready for your team.</p>
-      <p style="margin-top: 12px; font-family: var(--f-mono); font-size: 12px; color: var(--st);">Zero data extraction. All analysis runs in your environment. PII not required.</p>
-    </div>
-    <div class="audit-grid">
-      <div class="audit-detail reveal">
-        <h3>What you get</h3>
-        <p>A comprehensive exposure report drawing from a proven library of 43+ behavioral signals — plus custom detection logic built for your specific environment. Every flagged pattern includes the underlying logic, the entities involved, and the estimated dollar impact.</p>
-        <ul class="audit-includes">
-          <li>Proven signals deployed from our library, tailored to your verticals</li>
-          <li>Custom signals built for fraud patterns specific to your business</li>
-          <li>Entity-level findings — specific accounts, vendors, or users flagged</li>
-          <li>Dollar exposure quantified per signal and per entity</li>
-          <li>Complete SQL logic for every finding (glass box — nothing hidden)</li>
-          <li>Executive summary for leadership with prioritized action items</li>
-          <li>Calibrated thresholds tuned to your transaction volume</li>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 32px 28px;" class="reveal">
+        <div style="font-family: var(--f-mono); font-size: 13px; font-weight: 700; color: var(--st); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">What your program was built to do</div>
+        <ul style="list-style: none; font-size: 14px; color: var(--fg); line-height: 1.7; display: flex; flex-direction: column; gap: 8px;">
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--st); font-family: var(--f-mono);">→</span>Grow members</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--st); font-family: var(--f-mono);">→</span>Drive engagement</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--st); font-family: var(--f-mono);">→</span>Increase repeat purchases</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--st); font-family: var(--f-mono);">→</span>Reward your best customers</li>
         </ul>
       </div>
-      <div class="audit-specs reveal">
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Format</span>
-          <span class="audit-spec-value">Fixed scope, one-time engagement</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Signals</span>
-          <span class="audit-spec-value">Proven library + custom-built</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Data access</span>
-          <span class="audit-spec-value">Flexible — your data never leaves</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Platforms</span>
-          <span class="audit-spec-value">Snowflake, BigQuery, Redshift, Databricks</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Data depth</span>
-          <span class="audit-spec-value">12–24 months of transaction history</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Timeline</span>
-          <span class="audit-spec-value">2–3 weeks from data access</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Deliverable</span>
-          <span class="audit-spec-value">Exposure report + all SQL</span>
-        </div>
-        <div class="audit-spec-row">
-          <span class="audit-spec-label">Starting at</span>
-          <span class="audit-spec-value price">$15,000</span>
-        </div>
+      <div style="background: var(--kw-dim); border: 1px solid rgba(217,119,87,0.25); border-radius: 10px; padding: 32px 28px;" class="reveal">
+        <div style="font-family: var(--f-mono); font-size: 13px; font-weight: 700; color: var(--kw); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">What it wasn't built to catch</div>
+        <ul style="list-style: none; font-size: 14px; color: var(--fg); line-height: 1.7; display: flex; flex-direction: column; gap: 8px;">
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--kw); font-family: var(--f-mono);">→</span>Redemption patterns over months</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--kw); font-family: var(--f-mono);">→</span>Coordinated account clusters</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--kw); font-family: var(--f-mono);">→</span>Synthetic members farming points</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--kw); font-family: var(--f-mono);">→</span>Promo abuse below every threshold</li>
+        </ul>
+      </div>
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 32px 28px;" class="reveal">
+        <div style="font-family: var(--f-mono); font-size: 13px; font-weight: 700; color: var(--fn); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;">What we do</div>
+        <ul style="list-style: none; font-size: 14px; color: var(--fg); line-height: 1.7; display: flex; flex-direction: column; gap: 8px;">
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--fn); font-family: var(--f-mono);">→</span>Run behavioral signals against 12+ months of data</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--fn); font-family: var(--f-mono);">→</span>Surface patterns nobody else is looking for</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--fn); font-family: var(--f-mono);">→</span>Document findings with dollar amounts</li>
+          <li style="padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: var(--fn); font-family: var(--f-mono);">→</span>Deliver every SQL query used — nothing hidden</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section id="how" class="section-border">
+
+<!-- Stats -->
+<section style="padding: 80px 0; position: relative; z-index: 1; background: var(--bg2);">
   <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">The Process</div>
-      <h2>Four steps. No ambiguity.</h2>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card reveal">
-        <h3>Strategy call</h3>
-        <p>30 minutes. You walk us through your environment, data stack, and fraud concerns. We identify which signals apply and what custom detection your business needs.</p>
+    <div style="font-family: var(--f-mono); font-size: 14px; font-weight: 500; color: var(--dim); letter-spacing: 0.06em; margin-bottom: 32px;" class="reveal">// Loyalty fraud across US programs</div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;" class="reveal">
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 28px; font-weight: 700; color: var(--white);">$3.1B</div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px;">in stolen reward-value per year</div>
       </div>
-      <div class="step-card reveal">
-        <h3>Data access</h3>
-        <p>We work with your InfoSec requirements — sandboxed environment, client-side execution, or contractor onboarding. Your data never leaves your infrastructure.</p>
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 28px; font-weight: 700; color: var(--white);">72%</div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px;">of programs have experienced fraud</div>
       </div>
-      <div class="step-card reveal">
-        <h3>Signal analysis</h3>
-        <p>We deploy relevant signals from our library, build custom detection logic for your environment, calibrate thresholds, and document every finding.</p>
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 28px; font-weight: 700; color: var(--white);">4–5x</div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px;">more attacks on loyalty accounts</div>
       </div>
-      <div class="step-card reveal">
-        <h3>Exposure report</h3>
-        <p>You get a documented exposure report with entity-level findings, dollar impact, and every SQL query used — nothing hidden.</p>
+      <div>
+        <div style="font-family: var(--f-mono); font-size: 28px; font-weight: 700; color: var(--white);">42%</div>
+        <div style="font-size: 13px; color: var(--muted); margin-top: 6px;">of merchants say protection is inadequate</div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="glassbox">
-  <div class="container">
-    <div class="glassbox-inner">
-      <div class="glassbox-text reveal">
-        <div class="eyebrow">The Approach</div>
-        <h2>Glass box, not black box</h2>
-        <p>Every signal is a SQL query you can read, audit, and run yourself. No proprietary scoring. No opaque models. When a pattern is flagged, you see exactly why — the logic, the data, the threshold.</p>
-        <p>This is behavioral forensics, not surveillance tooling. The framework is open source under Apache 2.0. The value of the audit is in the calibration, interpretation, and domain expertise applied to your specific environment.</p>
-        <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font-family: var(--f-mono); font-size: 13px; color: var(--fn); text-decoration: none; transition: color 0.2s;">See the full signal library on GitHub →</a>
-      </div>
-      <div class="glassbox-code reveal">
-        <div class="code-body">
-          <span class="cm">-- Signal: Loyalty redemption velocity spike</span><br>
-          <span class="cm">-- Flags accounts with sudden bursts of</span><br>
-          <span class="cm">-- redemption activity vs. their baseline</span><br><br>
-          <span class="kw">WITH</span> baseline <span class="kw">AS</span> (<br>
-          &nbsp;&nbsp;<span class="kw">SELECT</span> account_id,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">AVG</span>(monthly_redemptions) <span class="kw">AS</span> avg_rate,<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">STDDEV</span>(monthly_redemptions) <span class="kw">AS</span> std_rate<br>
-          &nbsp;&nbsp;<span class="kw">FROM</span> redemption_monthly_agg<br>
-          &nbsp;&nbsp;<span class="kw">WHERE</span> period >= <span class="fn">DATEADD</span>(<span class="st">'month'</span>, -12, <span class="fn">CURRENT_DATE</span>)<br>
-          &nbsp;&nbsp;<span class="kw">GROUP BY</span> account_id<br>
-          )<br>
-          <span class="kw">SELECT</span> r.account_id,<br>
-          &nbsp;&nbsp;r.current_month_redemptions,<br>
-          &nbsp;&nbsp;b.avg_rate,<br>
-          &nbsp;&nbsp;<span class="fn">ROUND</span>((r.current_month_redemptions - b.avg_rate)<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;/ <span class="fn">NULLIF</span>(b.std_rate, 0), 2) <span class="kw">AS</span> z_score<br>
-          <span class="kw">FROM</span> current_redemptions r<br>
-          <span class="kw">JOIN</span> baseline b <span class="kw">ON</span> r.account_id = b.account_id<br>
-          <span class="kw">WHERE</span> z_score > <span class="st">3.0</span>;
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="section-border">
+<!-- What we do -->
+<section id="what" class="section-border">
   <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">Signal Coverage</div>
-      <h2>Where are your blind spots?</h2>
-      <p>43+ proven signals across four verticals — and we build more. The audit starts with our library and extends it with custom detection tailored to your fraud surface.</p>
+    <div style="max-width: 600px; margin-bottom: 48px;" class="reveal">
+      <h2 style="font-family: var(--f-display); font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 700; color: var(--white); letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.2;">The Fraud Signal Diagnostic</h2>
+      <p style="font-size: 16px; color: var(--dim); line-height: 1.7;">We connect to your data, run behavioral detection signals against your rewards program history, and tell you exactly what's leaking and where.</p>
+      <p style="margin-top: 12px; font-family: var(--f-mono); font-size: 12px; color: var(--st);">Your data never leaves your environment.</p>
     </div>
-    <div class="coverage-tags reveal">
-      <div class="coverage-tag">Procurement & AP <span class="count">10</span></div>
-      <div class="coverage-tag">E-Commerce & Payments <span class="count">10</span></div>
-      <div class="coverage-tag">Loyalty, Rewards & Promos <span class="count">13</span></div>
-      <div class="coverage-tag">Marketplace & Platform <span class="count">10</span></div>
-    </div>
-    <div style="margin-top: 32px; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; display: inline-flex; align-items: center; gap: 16px; flex-wrap: wrap;" class="reveal">
-      <span style="font-size: 14px; color: var(--dim);">Every signal is public. The work speaks for itself.</span>
-      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" style="font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--fn); text-decoration: none; white-space: nowrap; transition: color 0.2s;">Explore on GitHub →</a>
-    </div>
-    <p style="margin-top: 12px; font-family: var(--f-mono); font-size: 11px; color: var(--comment);">Open source · Apache 2.0</p>
-  </div>
-</section>
-
-<section id="about" class="founder-section section-border">
-  <div class="container">
-    <div class="section-head reveal">
-      <div class="eyebrow">Who's Behind This</div>
-      <h2>Built by a fraud analyst, not a vendor</h2>
-    </div>
-    <div class="founder-grid">
+    <div class="what-grid">
       <div class="reveal">
-        <div class="founder-quote">Fraud is a game of pattern recognition. The people running these schemes are disciplined — they stay below thresholds, rotate providers, and move slowly. You beat them by studying the patterns they don't know they're making.</div>
+        <h3>What you get</h3>
+        <ul class="what-list">
+          <li>Behavioral signal scan across 12+ months of rewards data</li>
+          <li>Flagged accounts, entities, and patterns with dollar exposure</li>
+          <li>Every SQL query we used — glass box, nothing hidden</li>
+          <li>Executive summary your leadership team can act on</li>
+        </ul>
       </div>
-      <div class="reveal">
-        <div class="founder-name">Austin Ocampo</div>
-        <div class="founder-title-text">Founder, Antigenic Analytics</div>
-        <div class="founder-creds">
-          <div class="founder-cred">B.S. Econometrics & Psychology, UC Irvine</div>
-          <div class="founder-cred">Senior analyst at multiple Fortune 50 companies</div>
-          <div class="founder-cred">$26M+ in documented fraud exposure across prior roles</div>
-          <div class="founder-cred">Built and deployed behavioral detection signals against real claims, enrollment, and loyalty data at scale</div>
+      <div class="what-specs reveal">
+        <div class="what-spec-row">
+          <span class="what-spec-label">Scope</span>
+          <span class="what-spec-value">Loyalty & rewards data</span>
+        </div>
+        <div class="what-spec-row">
+          <span class="what-spec-label">Data access</span>
+          <span class="what-spec-value">Flexible — your data never leaves</span>
+        </div>
+        <div class="what-spec-row">
+          <span class="what-spec-label">Platforms</span>
+          <span class="what-spec-value">Snowflake, BigQuery, Redshift, Databricks</span>
+        </div>
+        <div class="what-spec-row">
+          <span class="what-spec-label">Data depth</span>
+          <span class="what-spec-value">12–24 months</span>
+        </div>
+        <div class="what-spec-row">
+          <span class="what-spec-label">Timeline</span>
+          <span class="what-spec-value">2–3 weeks</span>
+        </div>
+        <div class="what-spec-row">
+          <span class="what-spec-label">Deliverable</span>
+          <span class="what-spec-value">Exposure report + all SQL</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+
+<!-- About -->
+<section id="about" class="about-section section-border">
+  <div class="container">
+    <div class="about-inner reveal">
+      <div class="about-name">Austin Ocampo</div>
+      <div class="about-title">Founder, Antigenic Analytics</div>
+      <p class="about-bio">Former senior analyst on the risk and fraud team inside a Fortune 50 rewards program. I built the behavioral signals that uncovered redemption abuse, synthetic accounts, and coordinated exploitation — patterns that were invisible to every existing tool in the stack.</p>
+      <p class="about-bio">B.S. Econometrics & Psychology, UC Irvine. $26M+ in documented fraud exposure across prior roles.</p>
+      <a href="https://github.com/AustinOcampo/antigenic-analytics" target="_blank" style="font-family: var(--f-mono); font-size: 13px; color: var(--fn); text-decoration: none;">Signal library on GitHub →</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
 <section class="cta-section">
   <div class="container">
     <div class="reveal">
-      <div class="eyebrow" style="justify-content: center;">Get Started</div>
-      <h2>Ready to see what you're missing?</h2>
-      <p>Book a 30-minute strategy call. No pitch deck. No pressure. Just an honest conversation about your fraud surface and whether a signal audit makes sense.</p>
+      <h2>Think your program might be leaking?</h2>
+      <p>30 minutes. Walk us through your rewards environment. We'll tell you if a diagnostic makes sense.</p>
       <div class="cta-actions">
-        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-primary">Book a Strategy Call →</a>
+        <a href="https://calendly.com/austinocampo47/30min" target="_blank" class="btn-primary">Book a Call →</a>
         <a href="mailto:austinocampo47@gmail.com" class="btn-ghost">Email Us Instead</a>
       </div>
     </div>
   </div>
 </section>
 
+
+<!-- Footer -->
 <footer>
   <div class="container">
     <p style="margin-bottom: 8px;">
@@ -655,8 +455,8 @@
       <a href="https://calendly.com/austinocampo47/30min" target="_blank">Calendly</a> &nbsp;·&nbsp;
       <a href="mailto:austinocampo47@gmail.com">Contact</a>
     </p>
-    <p>© 2026 Antigenic Analytics · Apache 2.0</p>
-    <p style="margin-top: 20px; font-family: var(--f-mono); font-size: 10px; color: #1E2733; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6;">* Why "antigenic"? In biology, antigenic variation is how pathogens constantly change their surface proteins to evade the immune system. Fraud works the same way — schemes mutate to slip past the defenses built to catch them. We study the mutation.</p>
+    <p>© 2026 Antigenic Analytics</p>
+    <p style="margin-top: 20px; font-family: var(--f-mono); font-size: 10px; color: var(--fg); max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6;">* Why "antigenic"? In biology, antigenic variation is how pathogens constantly change their surface proteins to evade the immune system. Fraud works the same way — schemes mutate to slip past the defenses built to catch them. We study the mutation.</p>
   </div>
 </footer>
 
